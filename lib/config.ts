@@ -1,9 +1,9 @@
 // Search Engine Configuration
 export const SEARCH_CONFIG = {
   // Search Settings
-  MAX_SEARCH_QUERIES: 4,        // Maximum number of search queries to generate
-  MAX_SOURCES_PER_SEARCH: 6,     // Maximum sources to return per search query
-  MAX_SOURCES_TO_SCRAPE: 6,      // Maximum sources to scrape for additional content
+  MAX_SEARCH_QUERIES: 24,        // Maximum number of search queries to generate
+  MAX_SOURCES_PER_SEARCH: 10,     // Maximum sources to return per search query
+  MAX_SOURCES_TO_SCRAPE: 20,      // Maximum sources to scrape for additional content
   
   // Content Processing
   MIN_CONTENT_LENGTH: 100,       // Minimum content length to consider valid
