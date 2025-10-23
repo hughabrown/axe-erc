@@ -1,0 +1,24 @@
+task_assignments:
+  - task_group: "Task Group 1: Configuration & Foundation"
+    assigned_subagent: "api-engineer"
+    rationale: "Backend configuration files, TypeScript modules, and constants require API engineer expertise"
+
+  - task_group: "Task Group 2: HRDD State Machine & Workflow Logic"
+    assigned_subagent: "api-engineer"
+    rationale: "Core backend workflow logic, LangGraph state machines, and business logic are API engineer responsibilities"
+
+  - task_group: "Task Group 3: Frontend - Dossier Input Form"
+    assigned_subagent: "ui-designer"
+    rationale: "Frontend form components, UI modifications, and user input handling are UI designer responsibilities"
+
+  - task_group: "Task Group 4: Frontend - HRDD Progress Display"
+    assigned_subagent: "ui-designer"
+    rationale: "Frontend progress visualization and event-driven UI updates are UI designer responsibilities"
+
+  - task_group: "Task Group 5: Frontend - Report Display & Citations"
+    assigned_subagent: "ui-designer"
+    rationale: "Frontend report rendering, citation tooltips, and copy functionality are UI designer responsibilities"
+
+  - task_group: "Task Group 6: End-to-End Testing & Acceptance Criteria Validation"
+    assigned_subagent: "testing-engineer"
+    rationale: "Comprehensive end-to-end testing, acceptance criteria validation, and test coverage analysis are testing engineer responsibilities"

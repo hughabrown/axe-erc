@@ -7,6 +7,7 @@ interface ProcessedSource extends Source {
   extractedSections: string[];
   keywords: string[];
   summarized?: boolean;
+  fullContent?: string;  // Preserve original content for Pass 2+ deep dive
 }
 
 export class ContextProcessor {
@@ -342,6 +343,7 @@ Provide a focused summary that would help answer the user's question:`,
       return {
         ...source,
         content: summary,
+      fullContent: source.content,  // Preserve original content
         relevanceScore,
         extractedSections: [summary],
         keywords: this.extractKeywords(query, searchQueries),

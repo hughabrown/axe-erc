@@ -1,0 +1,596 @@
+# HRDD Research Orchestration Workflow
+
+## Overview
+This workflow document defines the phases and flow of the Human Rights Due Diligence (HRDD) assessment system, from dossier input to final structured report generation.
+
+## Input Phase
+**Phase Name**: Dossier Collection
+**Duration**: User-initiated (< 1 minute)
+
+**Inputs Required**:
+- Customer name (text)
+- Use case description (textarea, detailed)
+- Deployment country (text, free-form)
+
+**Validation**:
+- No validation for MVP
+- All three fields required
+- Free-text entry, no dropdowns
+
+**Output**:
+- Dossier object: {customer, useCase, country}
+- Triggers automated two-stage research workflow
+
+---
+
+## Stage 1: Preliminary Screening
+**Phase Name**: Preliminary Screening
+**Duration**: Estimated 5-10 minutes
+**Parallel Execution**: All three checks execute in parallel where possible
+
+### Phase 1.1: Controversial Weapons Check
+**Purpose**: Identify if use case involves prohibited weapons that trigger automatic rejection
+
+**Research Activities**:
+- Analyze use case description for weapons-related keywords
+- Search for indicators of prohibited weapons categories:
+  - Nuclear, chemical, biological weapons
+  - Cluster munitions and anti-personnel mines
+  - Autonomous weapon systems (EU definition: weapons without meaningful human control)
+
+**Authoritative Sources**:
+- EU Autonomous Weapons Framework (europa.eu)
+- Campaign to Stop Killer Robots (stopkillerrobots.org)
+- Wassenaar Arrangement dual-use controls (wassenaar.org)
+- UN weapons conventions documentation
+
+**Search Strategy**:
+- Use-case-specific queries (e.g., "vision optronics for military binoculars autonomous control")
+- NOT generic queries (e.g., "autonomous weapons")
+- Site-specific searches to authoritative sources
+- Broader web searches for context
+
+**Decision Logic**:
+- If prohibited weapons detected: Mark as PROHIBITED
+- Output: Boolean (prohibited/not prohibited) + explanation for each category
+- Continue to Enhanced DD regardless of result
+
+### Phase 1.2: Sanctions Check
+**Purpose**: Verify if customer or deployment country is under sanctions
+
+**Research Activities**:
+- Check customer name against major sanctions databases
+- Check deployment country sanctions status
+- Identify specific sanctions programs if applicable
+
+**Authoritative Sources** (Priority: CRITICAL):
+- OFAC Sanctions Database (treasury.gov/ofac)
+- UN Security Council Sanctions (un.org/securitycouncil/sanctions)
+- EU Sanctions Map (sanctionsmap.eu)
+
+**Search Strategy**:
+- Site-specific searches to each sanctions database
+- Exact customer name matching
+- Country-level sanctions checks
+- Both comprehensive and targeted sanctions programs
+
+**Decision Logic**:
+- If sanctioned entity found: Mark as SANCTIONED
+- Output: Boolean (sanctioned/not sanctioned) + specific programs
+- Continue to Enhanced DD regardless of result
+
+### Phase 1.3: High-Risk Jurisdiction Check
+**Purpose**: Identify if deployment country has automatic high-risk triggers (systematic IHL/HR violations)
+
+**Research Activities**:
+- Search for UN bodies investigations or accusations
+- Check international court dockets (ICC, ICJ)
+- Review recognized HR organizations reports
+- Assess systematic violations of international humanitarian law, human rights law, or atrocity crimes
+
+**Authoritative Sources**:
+- UN Human Rights Council (ohchr.org)
+- International Criminal Court (icc-cpi.int)
+- International Court of Justice (icj-cij.org)
+- Human Rights Watch (hrw.org)
+- Amnesty International (amnesty.org)
+
+**Search Strategy**:
+- Site-specific searches for country name + "violations" OR "investigation" OR "atrocity crimes"
+- Broader web searches for UN/court accusations
+- Date-scoped searches for recent and ongoing issues
+
+**Decision Logic**:
+- If systematic violations found: Mark as AUTO_HIGH_RISK (flag for Board)
+- Output: Boolean (high-risk/not high-risk) + evidence with citations
+- Continue to Enhanced DD regardless of result
+
+**Preliminary Screening Output**:
+- Status: REJECTED (if prohibited or sanctioned) OR PROCEED (if not)
+- High-Risk Flag: AUTO_HIGH_RISK (if jurisdiction triggers) OR STANDARD
+- Rationale with citations for each check
+- **CRITICAL**: Continue to Stage 2 Enhanced DD in all cases
+
+---
+
+## Stage 2: Enhanced Due Diligence
+**Phase Name**: Enhanced Due Diligence (Three Risk Factors)
+**Duration**: Estimated 30-45 minutes
+**Execution**: Parallel or optimized sequential (implementation decision)
+
+### Phase 2.1: Geographic Context Risk Factor
+**Purpose**: Assess deployment jurisdiction's legal safeguards and governance to prevent AI misuse
+
+**Research Activities**:
+- EU/NATO membership verification
+- Freedom House rating and trends
+- Press Freedom Index score
+- UN Human Rights Council reports
+- ICC/ICJ case dockets
+- State Department Human Rights Reports
+- Sanctions status (comprehensive vs targeted)
+- AI governance and surveillance laws
+
+**Authoritative Sources**:
+- Freedom House (freedomhouse.org) - Priority: HIGH
+- Reporters Without Borders (rsf.org) - Priority: HIGH
+- UN Human Rights Council (ohchr.org) - Priority: HIGH
+- International Criminal Court (icc-cpi.int) - Priority: HIGH
+- US State Department (state.gov) - Priority: MEDIUM
+- EU/NATO membership lists - Priority: HIGH
+
+**Search Strategy**:
+- Site-specific searches to each authoritative source
+- Country name + "Freedom House score" OR "Press Freedom Index"
+- Country name + "UN Human Rights Council report"
+- Country name + "AI governance" OR "surveillance laws"
+- Broader web searches for EU/NATO membership, governance frameworks
+
+**Risk Classification Thresholds** (from HRDD Guide Annex 3):
+
+**Low Risk - Stable, rights-respecting countries**:
+- EU or NATO member countries
+- Freedom House 'Free' rating (score >70)
+- Press Freedom Index score >60
+- No UN Human Rights Council investigations
+
+**Medium Risk - Partially free or declining safeguards**:
+- Freedom House 'Partly Free' or declining trends
+- Press Freedom Index score 30-60
+- UN Human Rights Council recommendations issued with improvement efforts
+- Democracies with governance gaps or declining trends
+
+**High Risk - Authoritarian or high misuse potential**:
+- Freedom House "Not Free" rating (score <40)
+- Press Freedom Index score <30
+- Documented misuse of technology for political repression
+- Conflict affected or authoritarian states
+- (Note: Automatic high-risk countries already flagged in Preliminary Screening)
+
+**Output**:
+- Risk Level: Low / Medium / High
+- Rationale with specific findings and citations
+- Freedom House score (if available)
+- Press Freedom Index score (if available)
+- Key UN/court findings
+- Information gaps (if data unavailable)
+
+### Phase 2.2: Customer Profile Risk Factor
+**Purpose**: Assess customer's ethical track record, governance practices, and commitment to international standards
+
+**Research Activities**:
+- Check customer website for ethics/HR policies
+- Verify UN Guiding Principles on Business and Human Rights adoption
+- Review corporate governance structures
+- Check sanctions databases (redundant with Preliminary Screening but comprehensive)
+- Search adverse media for violations (past 3-5 years with date scoping)
+- Identify defense industry association memberships
+- Review compliance track record
+- Assess ownership transparency
+- Check ESG compliance programs and sustainability reporting
+
+**Authoritative Sources**:
+- OFAC Sanctions (treasury.gov/ofac) - Priority: CRITICAL
+- UN Sanctions (un.org/securitycouncil/sanctions) - Priority: CRITICAL
+- EU Sanctions (sanctionsmap.eu) - Priority: CRITICAL
+- OpenCorporates (opencorporates.com) - Priority: MEDIUM
+- Human Rights Watch (hrw.org) - Priority: HIGH
+- Amnesty International (amnesty.org) - Priority: HIGH
+- Customer corporate website - Priority: HIGH
+
+**Search Strategy**:
+- Customer website search: "[customer name] ethics policy" OR "human rights policy" OR "UNGP"
+- Corporate registry searches: "[customer name] corporate registry" OR "annual report"
+- Sanctions database site-specific searches
+- Adverse media searches with date scoping: "[customer name] violations after:2020"
+- Defense industry searches: "[customer name] defense industry association"
+- Broader web searches for ESG reports, sustainability reports
+
+**Risk Classification Thresholds** (from HRDD Guide Annex 3):
+
+**Low Risk**:
+- Adopted UN Guiding Principles on Business and Human Rights or similar frameworks
+- Strong corporate governance with published ethics policies
+- Clean compliance record (no violations in past 5 years)
+- Transparent operations and public sustainability reporting
+- Public commitment to international humanitarian law compliance
+
+**Medium Risk**:
+- Established human rights compliance programs
+- Government entities with democratic oversight mechanisms
+- Organizations subject to regulatory oversight in EU/NATO member states
+- Companies with resolved violations (>3 years ago) and corrective actions taken
+
+**High Risk**:
+- Unresolved compliance violations or recent HR concerns (within past 3 years)
+- Opaque ownership structure, limited transparency, unclear governance
+- Companies in sensitive sectors without established ethics frameworks
+- Organizations under active investigation by regulatory bodies (but not sanctioned)
+- (Note: Sanctioned entities already flagged in Preliminary Screening)
+
+**Output**:
+- Risk Level: Low / Medium / High
+- Rationale with specific findings and citations
+- Ethics policies found (or lack thereof)
+- UNGP adoption status
+- Violations identified with dates
+- Governance transparency assessment
+- Information gaps (if data unavailable)
+
+### Phase 2.3: End-Use Application Risk Factor
+**Purpose**: Assess misuse potential if application is diverted or repurposed by bad actors
+
+**Research Activities**:
+- Analyze technical use case description
+- Assess level of human control (meaningful human control requirement)
+- Evaluate proximity to harm (administrative → combat-enabling → near-weaponization)
+- Determine ease of repurposing for harmful use
+- Review technical documentation (if provided by Sales Team)
+- Search defense/security media reporting
+- Compare to EU autonomous weapons definitions
+
+**Authoritative Sources**:
+- EU Autonomous Weapons Framework (europa.eu) - Priority: HIGH
+- Campaign to Stop Killer Robots (stopkillerrobots.org) - Priority: MEDIUM
+- Wassenaar Arrangement (wassenaar.org) - Priority: MEDIUM
+- Defense media (broader web, janes.com is paywalled) - Priority: LOW
+
+**Search Strategy**:
+- Use-case-specific queries (NOT generic "autonomous weapons")
+- Example: "vision optronics military binoculars human control"
+- Site-specific searches for autonomous weapons frameworks
+- Broader web searches for technical specifications, similar systems
+- Defense media searches for operational use cases
+
+**Risk Classification Thresholds** (from HRDD Guide Annex 3):
+
+**Low Risk - Limited Misuse Potential**:
+- Administrative, training, or logistical systems with minimal military impact
+- Maintenance, diagnostics, or health/safety applications
+- Defensive surveillance or access control that cannot directly enable attacks
+- Misuse would result in operational inconvenience, not lethal effects
+
+**Medium Risk - Combat-Enabling Potential**:
+- Reconnaissance, intelligence, or battlefield awareness tools
+- Target identification or tracking that still requires human decision-making
+- Defensive electronic warfare or countermeasure systems
+- Misuse could facilitate or accelerate combat operations
+
+**High Risk - Near-Weaponization Potential**:
+- Semi-autonomous strike or targeting systems
+- AI modules that could be adapted to launch attacks with limited human oversight
+- Technologies that could directly enable lethal or indiscriminate use in wrong hands
+- Close to prohibited autonomous weapon functionality
+
+**Output**:
+- Risk Level: Low / Medium / High
+- Rationale with analysis of three dimensions:
+  - Level of human control
+  - Proximity to harm
+  - Ease of repurposing
+- Citations to technical documentation or defense media
+- Comparison to EU autonomous weapons definition
+- Information gaps (if data unavailable)
+
+**Enhanced Due Diligence Output**:
+- Three risk factor assessments with classifications
+- Detailed rationale for each with citations
+- Information gaps identified per risk factor
+- Intermediate risk level: Highest of three factors (to be used in synthesis)
+
+---
+
+## Stage 3: Report Synthesis
+**Phase Name**: Final Report Generation
+**Duration**: Estimated 5-10 minutes
+**Execution**: Sequential (after all research complete)
+
+### Phase 3.1: Final Risk Classification
+**Purpose**: Determine overall risk classification based on all findings
+
+**Decision Logic**:
+- Final Risk Classification = HIGHEST of three risk factors (Geographic, Customer, End-Use)
+- If Preliminary Screening marked PROHIBITED or SANCTIONED: Add "Customer REJECTED" notice
+- If AUTO_HIGH_RISK jurisdiction: Note Board approval required
+- Low (any GREEN) → Medium (any ORANGE) → High (any RED)
+
+**Output**:
+- Final Risk Level: Low / Medium / High
+- REJECTED flag (if preliminary screening failed)
+- Board approval flag (if AUTO_HIGH_RISK)
+
+### Phase 3.2: Structured Report Generation
+**Purpose**: Generate comprehensive, auditable markdown report with all findings
+
+**Report Structure**:
+
+1. **Executive Summary**
+   - Final risk classification (Low/Medium/High)
+   - REJECTED notice (if applicable) - prominently at top
+   - Key findings summary
+   - Recommended next steps (ERC decision, Board Chair, Full Board vote)
+
+2. **Dossier Input**
+   - Customer name
+   - Use case description (full text)
+   - Deployment country
+   - Assessment date and processing duration
+
+3. **Preliminary Screening Results**
+   - Controversial Weapons Check: Prohibited / Not Prohibited + rationale
+   - Sanctions Check: Sanctioned / Not Sanctioned + programs if applicable
+   - High-Risk Jurisdiction: Auto High-Risk / Standard + evidence
+   - Preliminary Screening Status: REJECTED / PROCEED
+
+4. **Enhanced Due Diligence Findings**
+
+   **4.1 Geographic Context Risk Factor**
+   - Risk Level: Low / Medium / High
+   - Freedom House Score: [score] ([Free/Partly Free/Not Free])
+   - Press Freedom Index: [score]
+   - EU/NATO Membership: Yes / No
+   - UN Human Rights Council: [findings]
+   - ICC/ICJ Cases: [findings]
+   - Sanctions Status: [comprehensive/targeted/none]
+   - AI Governance Laws: [summary]
+   - Citations: [all sources used]
+
+   **4.2 Customer Profile Risk Factor**
+   - Risk Level: Low / Medium / High
+   - Ethics Policies: [found/not found] + summary
+   - UNGP Adoption: [confirmed/not found]
+   - Corporate Governance: [transparent/opaque] + details
+   - Sanctions Status: [sanctioned/not sanctioned]
+   - Adverse Media: [findings with dates]
+   - Compliance Violations: [none/past violations with dates/recent violations]
+   - Ownership Transparency: [assessment]
+   - ESG Reporting: [found/not found]
+   - Citations: [all sources used]
+
+   **4.3 End-Use Application Risk Factor**
+   - Risk Level: Low / Medium / High
+   - Level of Human Control: [high/medium/low] + assessment
+   - Proximity to Harm: [administrative/combat-enabling/near-weaponization]
+   - Repurposing Ease: [difficult/moderate/easy] + rationale
+   - Technical Analysis: [summary of use case assessment]
+   - Autonomous Weapons Comparison: [compliant/concerning/prohibited]
+   - Citations: [all sources used]
+
+5. **Risk Classification Rationale**
+   - Why Geographic Context received its rating
+   - Why Customer Profile received its rating
+   - Why End-Use Application received its rating
+   - Final classification logic: Highest of three = [Level]
+   - Preliminary screening impact (if REJECTED)
+
+6. **Recommended Conditions** (if Medium/High risk)
+   - Enhanced contractual safeguards
+   - Adherence to UN Guiding Principles
+   - Regular monitoring requirements
+   - Human rights impact assessments
+   - Transparency and reporting obligations
+
+7. **Information Gaps and Recommended Additional Research**
+   - Sources that were unavailable (with warning if critical)
+   - Data that could not be found (explicitly noted, not hallucinated)
+   - Suggested additional research areas
+   - Manual verification steps recommended
+   - Questions for Sales Team to obtain from customer
+
+8. **Full Citations**
+   - Appendix with all source URLs
+   - Every [source_id] reference linked to full URL
+   - Source access timestamps
+   - Note on source reliability (authoritative vs secondary)
+
+**Citation Requirements**:
+- EVERY factual claim must have inline citation [source_id]
+- Conflicting information presented with multiple citations [source_1, source_2]
+- Missing data explicitly stated: "Information not available" (never hallucinated)
+- Recency indicators: "Violation reported in 2022 [source_id]"
+- Warning banner if critical sources unavailable: "WARNING: Unable to access OFAC database - manual verification required"
+
+**Output Format**:
+- Valid markdown with consistent structure
+- Citation tooltips enabled (using existing Firesearch markdown renderer)
+- Copy/paste friendly
+- No PDF/Word export for MVP
+
+### Phase 3.3: Audit Trail Persistence
+**Purpose**: Save complete research trail for compliance and review (backend only)
+
+**Audit Trail Contents**:
+- Dossier inputs (customer, use case, country)
+- All queries generated (per phase, per risk factor)
+- All queries executed (with timestamps)
+- All sources accessed (URLs, access timestamps)
+- All LLM prompts used (with prompt version IDs)
+- All LLM responses (raw outputs)
+- Preliminary screening results (intermediate)
+- Risk factor classifications (intermediate)
+- Final report (complete markdown)
+- Processing duration (start to finish)
+- System configuration (model used, config version)
+
+**Storage**:
+- Backend database or file system (implementation decision)
+- NOT displayed in frontend for MVP
+- Accessible for future audit and review
+- Versioned for traceability
+
+**Output**:
+- Audit trail record saved
+- Confirmation of persistence
+
+---
+
+## Output Phase
+**Phase Name**: Report Display
+**Duration**: Immediate (upon synthesis completion)
+
+**Frontend Display**:
+- Show complete structured markdown report
+- Enable citation tooltips on hover
+- Provide copy/paste functionality
+- No PDF/Word export for MVP
+
+**User Actions**:
+- Read complete report
+- Copy report to clipboard
+- Reference citations via tooltips
+- Submit new dossier (start new assessment)
+
+---
+
+## Error Handling Throughout Workflow
+
+**Transient Failures**:
+- Retry up to MAX_SEARCH_ATTEMPTS (3) for search/scrape failures
+- Exponential backoff for LLM API errors
+- Fallback to GPT-4o-mini if GPT-4o unavailable (but GPT-4o preferred)
+
+**Critical Source Unavailable**:
+- Continue with partial data
+- Flag missing critical source prominently in report
+- Add warning banner: "WARNING: Unable to access [source name] - manual verification required"
+- Never halt entire assessment
+
+**Parse Failures**:
+- Log to audit trail
+- Present raw data with note in report
+- Flag for manual review
+
+**LLM Errors**:
+- Retry with exponential backoff
+- Log error to audit trail
+- If persistent: Generate partial report with error note
+
+**Never Halt Entirely**:
+- Always produce a report (even if partial or flagged)
+- Clearly indicate limitations and gaps
+- Enable ERC manual review with transparency
+
+---
+
+## Workflow Timing Estimates
+
+**Total Duration**: 40-60 minutes (up to 1 hour acceptable)
+
+**Breakdown**:
+- Dossier Input: <1 minute (user-initiated)
+- Preliminary Screening: 5-10 minutes
+  - Controversial Weapons Check: 2-3 minutes
+  - Sanctions Check: 2-3 minutes
+  - High-Risk Jurisdiction Check: 3-5 minutes
+- Enhanced Due Diligence: 30-45 minutes
+  - Geographic Context: 10-15 minutes
+  - Customer Profile: 10-15 minutes
+  - End-Use Application: 10-15 minutes
+- Report Synthesis: 5-10 minutes
+  - Risk Classification: 1-2 minutes
+  - Report Generation: 3-5 minutes
+  - Audit Trail Persistence: 1-2 minutes
+- Display: Immediate
+
+**Optimization Notes**:
+- Parallel execution where possible (preliminary checks, risk factors)
+- Sequential where required (report synthesis after research)
+- Prioritize quality over speed
+- Acceptable to take full hour if needed for thoroughness
+
+---
+
+## Success Metrics
+
+**Workflow Completeness**:
+- All phases execute successfully
+- No missing sections in final report
+- All citations properly formatted
+
+**Research Quality**:
+- Authoritative sources prioritized
+- Information gaps explicitly flagged
+- Conflicting information presented transparently
+- Use-case-specific queries (not generic)
+
+**Compliance**:
+- Risk classifications align with HRDD Guide Annex 3
+- Every factual claim has citation
+- Audit trail complete
+- Report structure matches HRDD Guide requirements
+
+**Reliability**:
+- Graceful degradation when sources unavailable
+- Never hallucinates missing data
+- Consistent outputs for same inputs
+- Warnings for critical gaps
+
+---
+
+## Configuration Dependencies
+
+**Authoritative Sources Config**: `/config/hrdd-sources.json` (or .yaml or .ts)
+- Defines sources for each risk factor and preliminary screening
+- Priority levels (critical/high/medium/low)
+- Paywall flags
+- Search strategies (site-specific vs broader-web)
+
+**Prompt Templates**: In specification document
+- Preliminary screening prompts (weapons, sanctions, jurisdiction)
+- Risk factor assessment prompts (geographic, customer, end-use)
+- Query generation prompts (per risk factor)
+- Report synthesis prompt
+
+**HRDD Guide**: `/home/hughbrown/code/firecrawl/firesearch/docs/hrdd-guide.md`
+- Risk thresholds and classification criteria
+- Definitions (controversial weapons, autonomous weapons)
+- Decision workflows and approval requirements
+
+---
+
+## Implementation Notes
+
+**LangGraph State Machine**:
+- Define nodes for each phase (preliminary checks, risk factors, synthesis)
+- Use reducers for source deduplication
+- Event callbacks for progress streaming
+- Conditional edges for workflow control
+
+**Event Streaming**:
+- phase-update: "Preliminary Screening", "Geographic Context Assessment", etc.
+- searching: Individual query execution
+- found: Sources discovered
+- source-processing / source-complete: Scraping progress
+- content-chunk: Streaming final report
+- final-result: Complete report with sources
+
+**State Fields**:
+- dossier: {customer, useCase, country}
+- preliminaryScreening: {weapons, sanctions, jurisdiction}
+- geographicRisk: {level, rationale, citations}
+- customerRisk: {level, rationale, citations}
+- endUseRisk: {level, rationale, citations}
+- sources: [] (deduplicated by URL)
+- queries: [] (all executed queries)
+- finalReport: string (markdown)
+- auditTrail: [] (all events and decisions)

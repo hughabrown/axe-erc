@@ -11,15 +11,15 @@ function AnimatedThinkingLine({ messages }: { messages: string[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
-  
+
   useEffect(() => {
     if (messages.length <= 1) return;
-    
+
     // Detect if this is a "speed run" (many source names)
     const isSpeedRun = messages.some(msg => msg.includes('Analyzing') && messages.length > 5);
     const cycleDelay = isSpeedRun ? 600 : 2000; // Faster for speed runs
     const fadeDelay = isSpeedRun ? 100 : 300;
-    
+
     const cycleMessages = () => {
       setIsVisible(false);
       setTimeout(() => {
@@ -35,24 +35,24 @@ function AnimatedThinkingLine({ messages }: { messages: string[] }) {
         setIsVisible(true);
       }, fadeDelay);
     };
-    
+
     if (!isComplete) {
       const interval = setInterval(cycleMessages, cycleDelay);
       return () => clearInterval(interval);
     }
   }, [messages, isComplete]);
-  
+
   // Extract URL from message if it's an "Analyzing" message
   const currentMessage = messages[currentIndex];
   const analyzingMatch = currentMessage.match(/Analyzing (.+)\.\.\./);
   const currentUrl = analyzingMatch ? analyzingMatch[1] : null;
-  
+
   return (
     <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
       <div className="w-5 h-5 mt-0.5 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 overflow-hidden">
         {currentUrl ? (
-          <Image 
-            src={getFaviconUrl(currentUrl)} 
+          <Image
+            src={getFaviconUrl(currentUrl)}
             alt=""
             width={20}
             height={20}
@@ -78,13 +78,13 @@ function AnimatedThinkingLine({ messages }: { messages: string[] }) {
 }
 
 // Component for found sources group with collapse/expand
-function FoundSourcesGroup({ 
-  event, 
-  sources, 
-  defaultExpanded, 
-  completedPhases, 
-  currentPhase, 
-  events 
+function FoundSourcesGroup({
+  event,
+  sources,
+  defaultExpanded,
+  completedPhases,
+  currentPhase,
+  events
 }: {
   event: SearchEvent;
   sources: {
@@ -99,12 +99,12 @@ function FoundSourcesGroup({
   events: SearchEvent[];
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  
+
   // Auto-collapse when a new search starts
   useEffect(() => {
     setIsExpanded(defaultExpanded);
   }, [defaultExpanded]);
-  
+
   return (
     <div className="animate-fade-in">
       <div className="flex items-center justify-between gap-2">
@@ -117,10 +117,10 @@ function FoundSourcesGroup({
             className="p-0.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors flex-shrink-0"
             aria-label={isExpanded ? "Collapse sources" : "Expand sources"}
           >
-            <svg 
-              className={`w-3 h-3 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
+            <svg
+              className={`w-3 h-3 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -128,7 +128,7 @@ function FoundSourcesGroup({
           </button>
         )}
       </div>
-      <div 
+      <div
         className={`ml-7 mt-1 overflow-hidden transition-all duration-300 ease-in-out ${
           isExpanded && sources.length > 0 ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
@@ -157,26 +157,26 @@ function FoundSourcesGroup({
 }
 
 // Component for animated source processing line
-function SourceProcessingLine({ url, stage, summary }: { 
-  url: string; 
+function SourceProcessingLine({ url, stage, summary }: {
+  url: string;
   stage: 'browsing' | 'extracting' | 'analyzing' | 'complete';
   summary?: string;
 }) {
   // const stages = ['browsing', 'extracting', 'analyzing', 'complete'];
   // const _currentStageIndex = stages.indexOf(stage);
-  
-  
+
+
   const stageLabels = {
     browsing: 'Browsing',
     extracting: 'Extracting',
     analyzing: 'Analyzing',
     complete: 'Complete'
   };
-  
+
   return (
     <div className="group flex items-start gap-2 text-xs py-1 animate-fade-in">
-      <Image 
-        src={getFaviconUrl(url)} 
+      <Image
+        src={getFaviconUrl(url)}
         alt=""
         width={16}
         height={16}
@@ -208,7 +208,7 @@ function SourceProcessingLine({ url, stage, summary }: {
           )
         ) : (
           <div className="flex items-center gap-1 mt-0.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             <span className="text-gray-500 dark:text-gray-500">
               {stageLabels[stage as keyof typeof stageLabels]}...
             </span>
@@ -232,7 +232,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
   const [lastEventTime, setLastEventTime] = useState<number>(Date.now());
   const messagesScrollRef = useRef<HTMLDivElement>(null);
   const stepsScrollRef = useRef<HTMLDivElement>(null);
-  
+
   // Track source processing states
   const [sourceStates, setSourceStates] = useState<Map<string, {
     url: string;
@@ -240,7 +240,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
     stage: 'browsing' | 'extracting' | 'analyzing' | 'complete';
     summary?: string;
   }>>(new Map());
-  
+
   // Format seconds into mm:ss or just ss
   const formatTime = (seconds: number): string => {
     if (seconds < 60) {
@@ -250,22 +250,38 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-  
+
+  // Check if this is an HRDD workflow by looking for HRDD-specific events
+  const isHRDDWorkflow = events.some(e => e.type === 'hrdd-phase' || e.type === 'preliminary-result' || e.type === 'risk-classification');
+
   // Initialize steps and start timer
   useEffect(() => {
     if (steps.length === 0 && events.length > 0) {
-      setSteps([
-        { id: 'understanding', label: 'Understanding request', status: 'pending' },
-        { id: 'planning', label: 'Planning search', status: 'pending' },
-        { id: 'searching', label: 'Searching sources', status: 'pending' },
-        { id: 'analyzing', label: 'Analyzing content', status: 'pending' },
-        { id: 'synthesizing', label: 'Synthesizing answer', status: 'pending' },
-        { id: 'complete', label: 'Complete', status: 'pending' }
-      ]);
+      if (isHRDDWorkflow) {
+        // HRDD-specific phases
+        setSteps([
+          { id: 'preliminary-screening', label: 'Preliminary Screening', status: 'pending' },
+          { id: 'geographic-context', label: 'Geographic Context Assessment', status: 'pending' },
+          { id: 'customer-profile', label: 'Customer Profile Assessment', status: 'pending' },
+          { id: 'end-use-application', label: 'End-Use Application Assessment', status: 'pending' },
+          { id: 'synthesizing', label: 'Synthesizing Report', status: 'pending' },
+          { id: 'complete', label: 'Complete', status: 'pending' }
+        ]);
+      } else {
+        // Standard search phases
+        setSteps([
+          { id: 'understanding', label: 'Understanding request', status: 'pending' },
+          { id: 'planning', label: 'Planning search', status: 'pending' },
+          { id: 'searching', label: 'Searching sources', status: 'pending' },
+          { id: 'analyzing', label: 'Analyzing content', status: 'pending' },
+          { id: 'synthesizing', label: 'Synthesizing answer', status: 'pending' },
+          { id: 'complete', label: 'Complete', status: 'pending' }
+        ]);
+      }
       // Start timer immediately
       setStartTime(Date.now());
     }
-  }, [events.length, steps.length]);
+  }, [events.length, steps.length, isHRDDWorkflow]);
 
   // Update timer every second
   useEffect(() => {
@@ -275,25 +291,80 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
           setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
         }
       }, 1000);
-      
+
       return () => clearInterval(interval);
     }
   }, [startTime, showFinalResult]);
 
-  // Update steps based on events - only show current and completed steps
+  // Update steps based on events - handle both HRDD and standard workflows
   useEffect(() => {
     // Extract search queries from events
     const searchEvents = events.filter(e => e.type === 'searching');
     const uniqueQueries = [...new Set(searchEvents.map(e => e.type === 'searching' ? e.query : ''))];
     setSearchQueries(uniqueQueries);
-    
-    const latestPhaseEvent = events.findLast(e => e.type === 'phase-update');
-    if (latestPhaseEvent?.type === 'phase-update') {
-      setCurrentPhase(latestPhaseEvent.phase);
-      
+
+    // Check for HRDD phase events
+    const latestHRDDPhaseEvent = events.findLast(e => e.type === 'hrdd-phase');
+    const latestStandardPhaseEvent = events.findLast(e => e.type === 'phase-update');
+
+    if (isHRDDWorkflow && latestHRDDPhaseEvent?.type === 'hrdd-phase') {
+      // Handle HRDD workflow phases
+      const hrddPhase = latestHRDDPhaseEvent.phase;
+      setCurrentPhase(hrddPhase as SearchPhase);
+
+      // Map HRDD phase names to step IDs
+      const phaseMapping: Record<string, string> = {
+        'preliminary-screening': 'preliminary-screening',
+        'preliminary-weapons': 'preliminary-screening',
+        'preliminary-sanctions': 'preliminary-screening',
+        'preliminary-jurisdiction': 'preliminary-screening',
+        'geographic-context': 'geographic-context',
+        'geographic-assessment': 'geographic-context',
+        'customer-profile': 'customer-profile',
+        'customer-assessment': 'customer-profile',
+        'end-use-application': 'end-use-application',
+        'end-use-assessment': 'end-use-application',
+        'synthesizing': 'synthesizing',
+        'synthesis': 'synthesizing',
+        'complete': 'complete'
+      };
+
+      const mappedPhaseId = phaseMapping[hrddPhase] || hrddPhase;
+
+      // Mark previous phases as completed
+      const hrddPhases = ['preliminary-screening', 'geographic-context', 'customer-profile', 'end-use-application', 'synthesizing', 'complete'];
+      const currentPhaseIndex = hrddPhases.indexOf(mappedPhaseId);
+      if (currentPhaseIndex > 0) {
+        setCompletedPhases(prev => {
+          const newCompleted = new Set(prev);
+          for (let i = 0; i < currentPhaseIndex; i++) {
+            newCompleted.add(hrddPhases[i]);
+          }
+          return newCompleted;
+        });
+      }
+
+      // Update step statuses
+      setSteps(prevSteps => {
+        return prevSteps.map(step => {
+          const stepPhaseIndex = hrddPhases.indexOf(step.id);
+          if (stepPhaseIndex < currentPhaseIndex) {
+            return { ...step, status: 'completed' };
+          } else if (stepPhaseIndex === currentPhaseIndex) {
+            return { ...step, status: 'active' };
+          } else {
+            return { ...step, status: 'pending' };
+          }
+        });
+      });
+
+    } else if (!isHRDDWorkflow && latestStandardPhaseEvent?.type === 'phase-update') {
+      // Handle standard search workflow phases
+      setCurrentPhase(latestStandardPhaseEvent.phase);
+
       // Mark previous phases as completed
       const phases: SearchPhase[] = ['understanding', 'planning', 'searching', 'analyzing', 'synthesizing', 'complete'];
-      const currentPhaseIndex = phases.indexOf(latestPhaseEvent.phase);
+      const currentPhaseIndex = phases.indexOf(latestStandardPhaseEvent.phase);
       if (currentPhaseIndex > 0) {
         setCompletedPhases(prev => {
           const newCompleted = new Set(prev);
@@ -303,16 +374,16 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
           return newCompleted;
         });
       }
-      
+
       setSteps(() => {
         const baseSteps = [
           { id: 'understanding', label: 'Understanding request', status: 'pending' },
           { id: 'planning', label: 'Planning search', status: 'pending' },
           { id: 'searching', label: 'Searching sources', status: 'pending' }
         ] as SearchStep[];
-        
+
         // Add dynamic search query steps if we're in or past the searching phase
-        if (['searching', 'analyzing', 'synthesizing', 'complete'].includes(latestPhaseEvent.phase) && uniqueQueries.length > 0) {
+        if (['searching', 'analyzing', 'synthesizing', 'complete'].includes(latestStandardPhaseEvent.phase) && uniqueQueries.length > 0) {
           uniqueQueries.forEach((query, idx) => {
             const queryLabel = query.length > 25 ? query.substring(0, 25) + '\u2026' : query;
             baseSteps.push({
@@ -322,27 +393,27 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
             });
           });
         }
-        
+
         // Add remaining steps
         baseSteps.push(
           { id: 'analyzing', label: 'Analyzing content', status: 'pending' },
           { id: 'synthesizing', label: 'Synthesizing answer', status: 'pending' },
           { id: 'complete', label: 'Complete', status: 'pending' }
         );
-        
+
         // Update status based on current phase
         const phases: SearchPhase[] = ['understanding', 'planning', 'searching', 'analyzing', 'synthesizing', 'complete'];
-        const currentPhaseIndex = phases.indexOf(latestPhaseEvent.phase);
-        
+        const currentPhaseIndex = phases.indexOf(latestStandardPhaseEvent.phase);
+
         baseSteps.forEach((step) => {
           if (step.id.startsWith('search-')) {
             // Check if this specific search is complete by looking for a 'found' event
             const searchIndex = parseInt(step.id.split('-')[1]);
             const searchQuery = uniqueQueries[searchIndex];
-            const foundEvent = events.find(e => 
+            const foundEvent = events.find(e =>
               e.type === 'found' && e.query.toLowerCase().trim() === searchQuery.toLowerCase().trim()
             );
-            
+
             if (foundEvent) {
               step.status = 'completed';
             } else if (currentPhaseIndex >= 2) { // We're in or past searching phase
@@ -359,11 +430,11 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
             }
           }
         });
-        
+
         return baseSteps;
       });
     }
-  }, [events]);
+  }, [events, isHRDDWorkflow]);
 
   // Handle streaming content and extract research info
   useEffect(() => {
@@ -372,24 +443,24 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
       const content = contentChunks.map(e => e.type === 'content-chunk' ? e.chunk : '').join('');
       setStreamedContent(content);
     }
-    
+
     const finalResult = events.find(e => e.type === 'final-result');
     if (finalResult) {
       setShowFinalResult(true);
     }
-    
+
     // Update last event time
     if (events.length > 0) {
       setLastEventTime(Date.now());
     }
-    
+
     // Count total sources found
     const foundEvents = events.filter(e => e.type === 'found');
     const totalSourcesFound = foundEvents.reduce((acc, event) => {
       return acc + (event.type === 'found' ? event.sources.length : 0);
     }, 0);
     setScrapedCount(totalSourcesFound);
-    
+
     // Update source processing states
     events.forEach(event => {
       if (event.type === 'source-processing') {
@@ -426,7 +497,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
       const timeSinceLastEvent = Date.now() - lastEventTime;
       setIsStalled(timeSinceLastEvent > 3000 && !showFinalResult && currentPhase === 'searching');
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [lastEventTime, showFinalResult, currentPhase]);
 
@@ -445,7 +516,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
   }, [steps]);
 
   const latestResult = events.findLast(e => e.type === 'final-result');
-  
+
   // Show final result if complete - only show the research box, not the content
   if (showFinalResult && latestResult?.type === 'final-result') {
     return (
@@ -470,7 +541,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
               </div>
             </div>
           </div>
-          
+
           {/* Scrollable steps area */}
           <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4">
             <div className="relative border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-white dark:bg-gray-800">
@@ -478,20 +549,20 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
                 {steps.map((step, index) => (
                   <div key={step.id} className="relative flex items-start gap-2 mb-6">
                     <div className="absolute left-[-24px] flex-shrink-0 mt-0.5">
-                      <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shadow-sm">
+                      <div className="w-5 h-5 rounded-full bg-[#0F1935] flex items-center justify-center shadow-sm">
                         <span className="text-white text-xs">✓</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex-1">
                       <p className="text-xs leading-tight text-gray-700 dark:text-gray-300">
                         {step.label}
                       </p>
                     </div>
-                    
+
                     {index < steps.length - 1 && (
-                      <div 
-                        className="absolute left-[-14px] top-[20px] h-[calc(100%+8px)] w-0.5 bg-orange-500"
+                      <div
+                        className="absolute left-[-14px] top-[20px] h-[calc(100%+8px)] w-0.5 bg-[#0F1935]"
                         style={{ opacity: 1 }}
                       />
                     )}
@@ -541,7 +612,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
             </div>
           </div>
         </div>
-        
+
         {/* Scrollable steps area */}
         <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pb-4" ref={stepsScrollRef}>
           <div className="relative border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-white dark:bg-gray-800">
@@ -561,21 +632,21 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
                 {/* Checkmark on the left */}
                 <div className="absolute left-[-24px] flex-shrink-0 mt-0.5">
                   {step.status === 'completed' ? (
-                    <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center shadow-sm animate-scale-in">
+                    <div className="w-5 h-5 rounded-full bg-[#0F1935] flex items-center justify-center shadow-sm animate-scale-in">
                       <span className="text-white text-xs">✓</span>
                     </div>
                   ) : step.status === 'active' ? (
-                    <div className="w-5 h-5 rounded-full bg-orange-400 animate-pulse shadow-sm" />
+                    <div className="w-5 h-5 rounded-full bg-[#0F1935]/80 animate-pulse shadow-sm" />
                   ) : (
                     <div className="w-5 h-5 rounded-full bg-gray-300 dark:bg-gray-600" />
                   )}
                 </div>
-                
+
                 {/* Label */}
                 <div className="flex-1">
                   <p className={`text-xs leading-tight transition-all ${
-                    step.status === 'active' 
-                      ? 'font-medium text-gray-900 dark:text-gray-100' 
+                    step.status === 'active'
+                      ? 'font-medium text-gray-900 dark:text-gray-100'
                       : step.status === 'completed'
                       ? 'text-gray-700 dark:text-gray-300'
                       : 'text-gray-500 dark:text-gray-500'
@@ -589,13 +660,13 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
                   )}
                 </div>
               </div>
-              
+
               {/* Connecting line - positioned after content */}
               {index < steps.length - 1 && (
-                <div 
+                <div
                   className={`absolute left-[-14px] top-[20px] h-[calc(100%+8px)] w-0.5 transition-all duration-300 ${
                     index < steps.filter(s => s.status === 'completed').length
-                      ? 'bg-orange-500'
+                      ? 'bg-[#0F1935]'
                       : 'bg-gray-300 dark:bg-gray-600'
                   }`}
                   style={{ opacity: 1 }}
@@ -617,10 +688,10 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
               const displayGroups: { event: SearchEvent; sourceProcessing?: unknown[] }[] = [];
               let currentFoundEvent: SearchEvent | null = null;
               let currentSources: unknown[] = [];
-              
+
               events.forEach((event) => {
                 if (event.type === 'content-chunk' || event.type === 'final-result') return;
-                
+
                 if (event.type === 'found') {
                   // Save any pending sources before starting new group
                   if (currentFoundEvent && currentSources.length > 0) {
@@ -641,28 +712,28 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
                   displayGroups.push({ event });
                 }
               });
-              
+
               // Don't forget the last group
               if (currentFoundEvent) {
                 displayGroups.push({ event: currentFoundEvent, sourceProcessing: currentSources });
               }
-              
+
               // Track the latest "found" event to know which sources should be expanded
               const latestFoundIndex = displayGroups.findLastIndex(g => g.event.type === 'found');
-              
+
               return displayGroups.map((group, i) => {
                 if (group.event.type === 'found') {
                   // Get the URLs from this specific found event
                   const foundUrls = new Set(group.event.sources.map(s => s.url));
-                  
+
                   // Get the current state of sources that match these URLs
                   const sourcesForThisQuery = Array.from(sourceStates.entries())
                     .filter(([url]) => foundUrls.has(url))
                     .map(([, source]) => source);
-                  
+
                   // Only expand sources for the current/latest search
                   const isCurrentSearch = i === latestFoundIndex;
-                  
+
                   return (
                     <FoundSourcesGroup
                       key={i}
@@ -675,7 +746,7 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
                     />
                   );
                 }
-                
+
                 return (
                   <div key={i} className="animate-fade-in">
                     {renderEvent(group.event, completedPhases, currentPhase, false, events)}
@@ -692,20 +763,177 @@ export function SearchDisplay({ events }: { events: SearchEvent[] }) {
 
 function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentPhase: SearchPhase | null = null, _showLoadingIndicator = false, events: SearchEvent[] = []) { // eslint-disable-line @typescript-eslint/no-unused-vars
   switch (event.type) {
+    // NEW: Multi-pass synthesis events
+    case 'multi-pass-phase': {
+      const passLabels = {
+        1: 'Pass 1: Overview',
+        2: 'Pass 2: Deep Dive',
+        3: 'Pass 3: Cross-Reference',
+        4: 'Pass 4: Final Synthesis'
+      };
+
+      return (
+        <div className="flex items-start gap-3 text-gray-900 dark:text-gray-100 font-medium">
+          <div className="w-5 h-5 mt-0.5 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <span className="text-xs text-blue-600 dark:text-blue-400 font-bold">{event.pass}</span>
+          </div>
+          <div className="text-sm">
+            <div className="font-semibold">{passLabels[event.pass]}</div>
+            <div className="text-gray-600 dark:text-gray-400 mt-0.5">{event.message}</div>
+          </div>
+        </div>
+      );
+    }
+
+    case 'outline-generated':
+      return (
+        <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+          <div className="w-5 h-5 mt-0.5 rounded bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3 h-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div className="text-sm">
+            <div className="font-medium">Outline generated with {event.outline.sections.length} sections</div>
+            <div className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+              {event.outline.sections.map(s => s.title).join(', ')}
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'deep-dive-section':
+      return (
+        <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+          <div className="w-5 h-5 mt-0.5 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <span className="text-sm">
+            Analyzing section: <span className="font-medium">&quot;{event.sectionName}&quot;</span>
+            <span className="text-xs text-gray-500 dark:text-gray-500 ml-2">({event.sourcesUsed} sources)</span>
+          </span>
+        </div>
+      );
+
+    case 'conflict-detected':
+      return (
+        <div className="flex items-start gap-3 text-white dark:text-white">
+          <div className="w-5 h-5 mt-0.5 rounded bg-[#0F1935]/10 dark:bg-[#0F1935]/10 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div className="text-sm">
+            <div className="font-medium">Conflict detected</div>
+            <div className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+              {event.claim} ({event.sources.length} sources)
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'citation-stats':
+      return (
+        <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+          <div className="w-5 h-5 mt-0.5 rounded bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+            <svg className="w-3 h-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="text-sm">
+            <div className="font-medium">Citations: {event.total} unique sources</div>
+            <div className="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+              Coverage: {(event.coverage * 100).toFixed(1)}%
+            </div>
+          </div>
+        </div>
+      );
+
+    // Handle HRDD-specific events
+    case 'hrdd-phase': {
+      // Check if this is the current active phase
+      // A phase is complete if there's another hrdd-phase OR a final-result after it
+      const eventIndex = events.indexOf(event);
+      const remainingEvents = events.slice(eventIndex + 1);
+      const isCurrentPhase = !remainingEvents.some(e => e.type === 'hrdd-phase' || e.type === 'final-result');
+
+      return (
+        <div className="flex items-start gap-3 text-gray-900 dark:text-gray-100 font-medium">
+          <div className="w-5 h-5 mt-0.5 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            {isCurrentPhase ? (
+              <svg className="w-3 h-3 animate-spin text-gray-600" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg className="w-3 h-3 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </div>
+          <span className="text-sm">{event.message}</span>
+        </div>
+      );
+    }
+
+    case 'preliminary-result':
+      return (
+        <div className={`flex items-start gap-3 ${event.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+          <div className={`w-5 h-5 mt-0.5 rounded ${event.passed ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'} flex items-center justify-center flex-shrink-0`}>
+            {event.passed ? (
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            )}
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Preliminary Screening: </span>
+            <span>{event.passed ? 'Passed' : 'Failed - Continuing with full assessment'}</span>
+          </div>
+        </div>
+      );
+
+    case 'risk-classification':
+      const riskColors = {
+        'Low': 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30',
+        'Medium': 'text-white dark:text-white bg-[#0F1935]/10 dark:bg-[#0F1935]/10',
+        'High': 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
+      };
+      const colorClass = riskColors[event.level] || 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-900/30';
+
+      return (
+        <div className="flex items-start gap-3 text-gray-900 dark:text-gray-100">
+          <div className={`w-5 h-5 mt-0.5 rounded flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+            <span className="text-xs font-bold">{event.level[0]}</span>
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">{event.factor}: </span>
+            <span className={`font-bold ${colorClass.split(' bg-')[0]}`}>{event.level} Risk</span>
+          </div>
+        </div>
+      );
+
     case 'thinking':
       // Single line animated display
       const messages = event.message.split('|');
       const isAnimated = messages.length > 1;
-      
+
       if (isAnimated) {
         return (
           <AnimatedThinkingLine messages={messages} />
         );
       }
-      
+
       // Check if this is the initial understanding (contains markdown headers)
       const isInitialThinking = event.message.includes('###') || event.message.includes('**');
-      
+
       if (isInitialThinking) {
         return (
           <div className="text-gray-500 dark:text-gray-400 text-sm">
@@ -713,23 +941,23 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           </div>
         );
       }
-      
+
       // Check if this is a processing message that should show a spinner
       const isProcessing = event.message.includes('Processing') && event.message.includes('sources');
       const isAnalyzing = event.message.includes('Analyzing content from');
-      
+
       if (isProcessing || isAnalyzing) {
         // Check for single source URL (for individual processing)
         const singleSourceMatch = event.message.match(/\|SOURCE:(.+)$/);
         const singleSourceUrl = singleSourceMatch?.[1];
         const displayMessage = singleSourceUrl ? event.message.replace(/\|SOURCE:.+$/, '') : event.message;
-        
+
         return (
           <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
             {singleSourceUrl ? (
               // Show favicon for individual source
-              <Image 
-                src={getFaviconUrl(singleSourceUrl)} 
+              <Image
+                src={getFaviconUrl(singleSourceUrl)}
                 alt=""
                 width={20}
                 height={20}
@@ -753,7 +981,7 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           </div>
         );
       }
-      
+
       return (
         <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
           <div className="w-5 h-5 mt-0.5 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
@@ -764,7 +992,7 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           <span className="text-sm">{event.message}</span>
         </div>
       );
-    
+
     case 'searching':
       // Check if this search has completed by looking for a matching 'found' event
       const searchingQuery = event.query.toLowerCase().trim();
@@ -773,12 +1001,12 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
         const foundQuery = e.query.toLowerCase().trim();
         return foundQuery === searchingQuery;
       });
-      
+
       return (
         <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-          <div className="w-5 h-5 mt-0.5 rounded bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
+          <div className="w-5 h-5 mt-0.5 rounded bg-[#0F1935]/10 dark:bg-[#0F1935]/10 flex items-center justify-center flex-shrink-0">
             {searchCompleted ? (
-              <svg className="w-3 h-3 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 text-white dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             ) : (
@@ -794,7 +1022,7 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           </span>
         </div>
       );
-    
+
     case 'found':
       return (
         <div className="text-sm text-gray-700 dark:text-gray-300">
@@ -808,12 +1036,12 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           </div>
         </div>
       );
-    
+
     case 'scraping':
       return (
         <div className="flex items-start gap-3">
-          <Image 
-            src={getFaviconUrl(event.url)} 
+          <Image
+            src={getFaviconUrl(event.url)}
             alt=""
             width={20}
             height={20}
@@ -826,19 +1054,19 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           />
           <div className="flex-1">
             <div className="text-sm text-gray-900 dark:text-gray-100">
-              Browsing <span className="font-medium text-orange-600 dark:text-orange-400">{new URL(event.url).hostname}</span> for &quot;{event.query}&quot;
+              Browsing <span className="font-medium text-white dark:text-white">{new URL(event.url).hostname}</span> for &quot;{event.query}&quot;
             </div>
           </div>
         </div>
       );
-    
+
     case 'phase-update':
       // Check if this phase has been completed (we've moved past it)
       const phases: SearchPhase[] = ['understanding', 'planning', 'searching', 'analyzing', 'synthesizing', 'complete'];
       const eventPhaseIndex = phases.indexOf(event.phase);
       const currentPhaseIndex = currentPhase ? phases.indexOf(currentPhase) : -1;
       const isCompleted = currentPhaseIndex > eventPhaseIndex || event.phase === 'complete';
-      
+
       return (
         <div className="flex items-start gap-3 text-gray-900 dark:text-gray-100 font-medium">
           <div className="w-5 h-5 mt-0.5 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
@@ -856,7 +1084,7 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           <span className="text-sm">{event.message}</span>
         </div>
       );
-    
+
     case 'error':
       return (
         <div className="flex items-start gap-3 text-red-600 dark:text-red-400">
@@ -872,12 +1100,12 @@ function renderEvent(event: SearchEvent, _completedPhases: Set<string>, currentP
           </div>
         </div>
       );
-    
+
     case 'source-processing':
     case 'source-complete':
       // This will be handled by the SourceProcessingLine component
       return null;
-    
+
     default:
       return null;
   }

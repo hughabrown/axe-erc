@@ -14,10 +14,10 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
   // Simple markdown parsing
   const parseMarkdown = (text: string) => {
     // Handle links [text](url) - must come before citations
-    let parsed = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:text-orange-700 underline">$1</a>');
-    
+    let parsed = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#F4BE18] hover:text-[#F4BE18]/80 underline">$1</a>');
+
     // Handle citations [1], [2], etc.
-    parsed = parsed.replace(/\[(\d+)\]/g, '<sup class="citation text-orange-600 cursor-pointer hover:text-orange-700">[$1]</sup>');
+    parsed = parsed.replace(/\[(\d+)\]/g, '<sup class="citation text-[#F4BE18] cursor-pointer hover:text-[#F4BE18]/80">[$1]</sup>');
     
     // Bold text
     parsed = parsed.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
@@ -104,7 +104,7 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({
         dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }} 
         className="markdown-content leading-relaxed [&>p]:text-sm [&>ul]:text-sm [&>ol]:text-sm [&_li]:text-sm [&>h1]:text-gray-900 [&>h1]:dark:text-gray-100 [&>h2]:text-gray-900 [&>h2]:dark:text-gray-100 [&>h3]:text-gray-900 [&>h3]:dark:text-gray-100 [&>h4]:text-gray-900 [&>h4]:dark:text-gray-100"
       />
-      {streaming && <span className="animate-pulse text-orange-500">▊</span>}
+      {streaming && <span className="animate-pulse text-[#F4BE18]">▊</span>}
     </div>
   );
 });

@@ -1,0 +1,30 @@
+task_assignments:
+  - task_group: "Task Group 1: Configuration Setup"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 2: Content Store Implementation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 3: Content Store Population"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 4: Pass 1 Implementation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 5: Pass 2 Implementation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 6: Pass 3 & Pass 4 Implementation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 7: Citation Tracking and Validation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 8: Multi-Pass Node Integration"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 9: UI Updates for Multi-Pass Display"
+    assigned_subagent: "ui-designer"
+
+  - task_group: "Task Group 10: Comprehensive Testing & Gap Analysis"
+    assigned_subagent: "testing-engineer"

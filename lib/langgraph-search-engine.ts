@@ -15,6 +15,21 @@ export type SearchPhase =
   | 'complete'
   | 'error';
 
+
+// Multi-pass synthesis outline structure
+export interface OutlineSection {
+  id: string;
+  title: string;
+  description: string;
+  relevantSources: Array<{ url: string; relevanceScore: number }>;
+  subsections?: Array<{ title: string; relevantSources: string[] }>;
+}
+
+export interface OutlineStructure {
+  sections: OutlineSection[];
+  overallTheme: string;
+}
+
 export type SearchEvent = 
   | { type: 'phase-update'; phase: SearchPhase; message: string }
   | { type: 'thinking'; message: string }
@@ -25,7 +40,13 @@ export type SearchEvent =
   | { type: 'final-result'; content: string; sources: Source[]; followUpQuestions?: string[] }
   | { type: 'error'; error: string; errorType?: ErrorType }
   | { type: 'source-processing'; url: string; title: string; stage: 'browsing' | 'extracting' | 'analyzing' }
-  | { type: 'source-complete'; url: string; summary: string };
+  | { type: 'source-complete'; url: string; summary: string }
+  // Multi-pass synthesis events
+  | { type: 'multi-pass-phase'; pass: 1 | 2 | 3 | 4; message: string }
+  | { type: 'outline-generated'; outline: OutlineStructure }
+  | { type: 'deep-dive-section'; sectionName: string; sourcesUsed: number }
+  | { type: 'conflict-detected'; claim: string; sources: string[] }
+  | { type: 'citation-stats'; total: number; coverage: number };
 
 export type ErrorType = 'search' | 'scrape' | 'llm' | 'unknown';
 

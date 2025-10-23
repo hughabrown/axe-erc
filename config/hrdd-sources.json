@@ -1,0 +1,488 @@
+{
+  "geographic_context": [
+    {
+      "name": "Freedom House",
+      "domain": "freedomhouse.org",
+      "description": "Country freedom scores and trends",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Reporters Without Borders",
+      "domain": "rsf.org",
+      "description": "Press Freedom Index rankings",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UN Human Rights Council",
+      "domain": "ohchr.org",
+      "description": "UN human rights reports and investigations",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "International Criminal Court",
+      "domain": "icc-cpi.int",
+      "description": "ICC case dockets and investigations",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "International Court of Justice",
+      "domain": "icj-cij.org",
+      "description": "ICJ rulings and cases",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "US State Department Human Rights Reports",
+      "domain": "state.gov",
+      "description": "Annual country human rights reports",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "EU Sanctions Database",
+      "domain": "sanctionsmap.eu",
+      "description": "EU sanctions map and database",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UN Security Council Sanctions",
+      "domain": "un.org",
+      "description": "UN sanctions lists and resolutions",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Amnesty International",
+      "domain": "amnesty.org",
+      "description": "Human rights reports and campaigns",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Human Rights Watch",
+      "domain": "hrw.org",
+      "description": "Human rights investigations and reports",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "European Parliament",
+      "domain": "europarl.europa.eu",
+      "description": "EU parliamentary reports and resolutions",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "NATO",
+      "domain": "nato.int",
+      "description": "NATO membership and security information",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Council of Europe",
+      "domain": "coe.int",
+      "description": "European human rights standards and monitoring",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UK Foreign Office Travel Advice",
+      "domain": "gov.uk",
+      "description": "UK travel advice and country risk assessments",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "EU AI Act Resources",
+      "domain": "europa.eu",
+      "description": "EU AI governance and regulation frameworks",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Freedom House Regional Reports",
+      "domain": "freedomhouse.org",
+      "description": "Regional freedom and democracy assessments",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "OECD Governance Indicators",
+      "domain": "oecd.org",
+      "description": "Governance and democracy indicators",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "V-Dem Institute",
+      "domain": "v-dem.net",
+      "description": "Democracy indices and datasets",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "World Bank Governance Indicators",
+      "domain": "worldbank.org",
+      "description": "Worldwide governance indicators",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Carnegie Endowment for International Peace",
+      "domain": "carnegieendowment.org",
+      "description": "Democracy and governance research",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    }
+  ],
+  "customer_profile": [
+    {
+      "name": "OFAC Sanctions List",
+      "domain": "treasury.gov",
+      "description": "US Office of Foreign Assets Control sanctions database",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UN Security Council Sanctions",
+      "domain": "un.org",
+      "description": "UN consolidated sanctions list",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "EU Sanctions Database",
+      "domain": "sanctionsmap.eu",
+      "description": "EU sanctions map for entities and individuals",
+      "priority": "critical",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "OpenCorporates",
+      "domain": "opencorporates.com",
+      "description": "Global corporate registry and ownership data",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UN Global Compact",
+      "domain": "unglobalcompact.org",
+      "description": "Corporate sustainability and human rights commitments",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Human Rights Watch - Business",
+      "domain": "hrw.org",
+      "description": "Corporate human rights investigations and reports",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Amnesty International - Business",
+      "domain": "amnesty.org",
+      "description": "Corporate accountability and human rights issues",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Transparency International",
+      "domain": "transparency.org",
+      "description": "Corporate corruption and transparency assessments",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "SIPRI Arms Transfers Database",
+      "domain": "sipri.org",
+      "description": "Defense industry and arms transfer data",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Business and Human Rights Resource Centre",
+      "domain": "business-humanrights.org",
+      "description": "Corporate human rights tracker and allegations",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "SEC EDGAR Filings",
+      "domain": "sec.gov",
+      "description": "US public company filings and disclosures",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Companies House UK",
+      "domain": "companieshouse.gov.uk",
+      "description": "UK company registry and filings",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "MSCI ESG Ratings",
+      "domain": "msci.com",
+      "description": "ESG ratings and sustainability assessments",
+      "priority": "medium",
+      "paywall": true,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Sustainalytics",
+      "domain": "sustainalytics.com",
+      "description": "ESG risk ratings and research",
+      "priority": "medium",
+      "paywall": true,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "RepRisk",
+      "domain": "reprisk.com",
+      "description": "ESG risk and adverse media screening",
+      "priority": "medium",
+      "paywall": true,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Corporate Accountability Lab",
+      "domain": "corporateaccountabilitylab.org",
+      "description": "Legal accountability for corporate abuses",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "ICIJ Investigations",
+      "domain": "icij.org",
+      "description": "Investigative journalism on corporate misconduct",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Defense Industry Daily",
+      "domain": "defenseindustrydaily.com",
+      "description": "Defense contractor news and analysis",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Jane's Defence",
+      "domain": "janes.com",
+      "description": "Defense industry intelligence and analysis",
+      "priority": "low",
+      "paywall": true,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Corporate Register",
+      "domain": "corporateregister.com",
+      "description": "Corporate sustainability and CSR reports",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    }
+  ],
+  "end_use_application": [
+    {
+      "name": "EU Autonomous Weapons Framework",
+      "domain": "europa.eu",
+      "description": "EU regulations on autonomous weapons systems",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Campaign to Stop Killer Robots",
+      "domain": "stopkillerrobots.org",
+      "description": "Advocacy and research on autonomous weapons",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Wassenaar Arrangement",
+      "domain": "wassenaar.org",
+      "description": "Dual-use export controls and strategic goods",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "ICRC Autonomous Weapons Guidance",
+      "domain": "icrc.org",
+      "description": "International humanitarian law on autonomous weapons",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "UN Group of Governmental Experts on LAWS",
+      "domain": "un.org",
+      "description": "UN discussions on lethal autonomous weapons systems",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Arms Control Association",
+      "domain": "armscontrol.org",
+      "description": "Arms control policy and emerging weapons",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Center for a New American Security",
+      "domain": "cnas.org",
+      "description": "Defense technology and autonomous systems research",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Stockholm International Peace Research Institute",
+      "domain": "sipri.org",
+      "description": "Military technology and arms control research",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Chatham House",
+      "domain": "chathamhouse.org",
+      "description": "International security and emerging technologies",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Brookings Institution",
+      "domain": "brookings.edu",
+      "description": "Defense technology and AI governance research",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "European External Action Service",
+      "domain": "eeas.europa.eu",
+      "description": "EU foreign policy and security frameworks",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "EU Dual-Use Export Controls",
+      "domain": "europa.eu",
+      "description": "EU dual-use goods export control regulations",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "US Bureau of Industry and Security",
+      "domain": "bis.doc.gov",
+      "description": "US dual-use export controls and CCL",
+      "priority": "high",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "Article 36",
+      "domain": "article36.org",
+      "description": "Weapons law and autonomous systems advocacy",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    },
+    {
+      "name": "PAX for Peace",
+      "domain": "paxforpeace.nl",
+      "description": "Peace and security research including autonomous weapons",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Jane's Defence Technology",
+      "domain": "janes.com",
+      "description": "Defense technology intelligence and analysis",
+      "priority": "low",
+      "paywall": true,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Defense News",
+      "domain": "defensenews.com",
+      "description": "Defense industry news and technology coverage",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Defense One",
+      "domain": "defenseone.com",
+      "description": "Defense technology and policy news",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "MIT Technology Review - AI",
+      "domain": "technologyreview.com",
+      "description": "AI and military technology analysis",
+      "priority": "low",
+      "paywall": false,
+      "search_strategy": "broader-web"
+    },
+    {
+      "name": "Future of Life Institute",
+      "domain": "futureoflife.org",
+      "description": "AI safety and autonomous weapons research",
+      "priority": "medium",
+      "paywall": false,
+      "search_strategy": "site-specific"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+name: HRDD Search Optimization
+description: Optimize HRDD workflow search strategy to reduce Firecrawl API credit usage by 62% while maintaining quality
+
+phases:
+  - name: Configuration Updates
+    description: Update query limits and model configuration
+    tasks:
+      - Update MAX_QUERIES_PER_FACTOR in lib/hrdd-config.ts
+      - Update preliminary screening limits in lib/hrdd-preliminary-screening.ts
+
+  - name: Prompt Engineering
+    description: Refactor query generation prompts to remove wasteful patterns
+    tasks:
+      - Update Geographic query generation prompt (remove year constraints, reduce query count)
+      - Update Customer query generation prompt (remove year constraints, reduce query count)
+      - Update End-Use query generation prompt (remove product/customer names, reduce query count)
+
+  - name: Search Logic Enhancements
+    description: Add deduplication and temporal filtering capabilities
+    tasks:
+      - Add query deduplication logic to geographicContextAssessment
+      - Add query deduplication logic to customerProfileAssessment
+      - Add query deduplication logic to endUseAssessment
+      - Add tbs parameter to Geographic searches (qdr:y)
+      - Add tbs parameter to Customer searches (custom 3-year range)
+      - Keep End-Use searches without time filter
+
+  - name: Observability Improvements
+    description: Fix audit trail logging for complete query tracking
+    tasks:
+      - Add audit entries to Geographic assessment searches
+      - Add audit entries to Customer assessment searches
+      - Add audit entries to End-Use assessment searches
+
+  - name: Testing & Validation
+    description: Verify optimizations don't degrade quality
+    tasks:
+      - Run regression tests on historical dossiers
+      - Validate credit usage reduction (660 → 250 sources)
+      - Verify no zero-result queries with product names
+      - Confirm query deduplication is working
+      - Measure performance improvement (30-40min → 12-15min)
+
+priority: high
+estimated_effort: medium
+risk_level: low

@@ -1,0 +1,132 @@
+{
+  "assessmentId": "hrdd-2025-10-22-asd-asd",
+  "timestamp": "2025-10-22T15:03:08.025Z",
+  "dossier": {
+    "customer": "ASD",
+    "useCase": "sd",
+    "country": "asd"
+  },
+  "summary": {
+    "totalQueries": 6,
+    "totalSources": 5,
+    "totalDuration": 5000,
+    "overallRisk": "Low",
+    "rejected": false
+  },
+  "timeline": [],
+  "queries": [
+    {
+      "query": "Freedom House score",
+      "timestamp": 1761145388025,
+      "phase": "geographic",
+      "resultsCount": 1
+    },
+    {
+      "query": "UN reports",
+      "timestamp": 1761145388025,
+      "phase": "geographic",
+      "resultsCount": 1
+    },
+    {
+      "query": "Ethics policy",
+      "timestamp": 1761145388025,
+      "phase": "customer",
+      "resultsCount": 1
+    },
+    {
+      "query": "OFAC sanctions",
+      "timestamp": 1761145388025,
+      "phase": "preliminary",
+      "resultsCount": 0
+    },
+    {
+      "query": "Autonomous weapons",
+      "timestamp": 1761145388025,
+      "phase": "end-use",
+      "resultsCount": 1
+    },
+    {
+      "query": "Dual-use controls",
+      "timestamp": 1761145388025,
+      "phase": "end-use",
+      "resultsCount": 1
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://freedomhouse.org/country/example",
+      "title": "Freedom in asd Report",
+      "timestamp": 1761145388025,
+      "phase": "geographic",
+      "scraped": true
+    },
+    {
+      "url": "https://hrw.org/example",
+      "title": "Human Rights Watch Report",
+      "timestamp": 1761145388025,
+      "phase": "geographic",
+      "scraped": true
+    },
+    {
+      "url": "https://europa.eu/ai-act",
+      "title": "EU AI Act",
+      "timestamp": 1761145388025,
+      "phase": "end-use",
+      "scraped": true
+    },
+    {
+      "url": "https://treasury.gov/ofac",
+      "title": "OFAC Sanctions",
+      "timestamp": 1761145388025,
+      "phase": "preliminary",
+      "scraped": true
+    },
+    {
+      "url": "https://opencorporates.com/example",
+      "title": "Corporate Registry",
+      "timestamp": 1761145388025,
+      "phase": "customer",
+      "scraped": true
+    }
+  ],
+  "riskClassifications": [
+    {
+      "factor": "Geographic Context",
+      "level": "Low",
+      "rationale": "Strong democratic institutions",
+      "timestamp": 1761145388025
+    },
+    {
+      "factor": "Customer Profile",
+      "level": "Low",
+      "rationale": "Good governance practices",
+      "timestamp": 1761145388025
+    },
+    {
+      "factor": "End-Use Application",
+      "level": "Low",
+      "rationale": "High human control",
+      "timestamp": 1761145388025
+    }
+  ],
+  "preliminaryScreening": {
+    "weapons": {
+      "prohibited": false,
+      "rationale": "No prohibited weapons"
+    },
+    "sanctions": {
+      "sanctioned": false,
+      "programs": []
+    },
+    "jurisdiction": {
+      "highRisk": false
+    },
+    "outcome": "PASS",
+    "timestamp": 1761145388025
+  },
+  "metadata": {
+    "exportedAt": "2025-10-22T15:03:08.025Z",
+    "version": "1.0",
+    "format": "json"
+  }
+}
