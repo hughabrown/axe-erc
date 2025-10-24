@@ -3,7 +3,19 @@ import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { FirecrawlClient } from './firecrawl';
 import { ContextProcessor } from './context-processor';
-import { SEARCH_CONFIG, MODEL_CONFIG } from './config';
+import { SEARCH_CONFIG, MODEL_CONFIG, SYNTHESIS_CONFIG } from './config';
+import { saveSearchResults } from './search-results-export';
+import { IContentStore, InMemoryContentStore } from './content-store';
+import {
+  generateOutline,
+  processSection,
+  validateFindings,
+  generateFinalReport,
+  OutlineStructure,
+  SectionFindings,
+  ValidationReport
+} from './multi-pass-synthesis';
+import { CitationValidator, CitationUsage } from './citation-validator';
 
 // Event types remain the same for frontend compatibility
 export type SearchPhase = 
@@ -168,6 +180,28 @@ const SearchStateAnnotation = Annotation.Root({
   retryCount: Annotation<number>({
     reducer: (x, y) => y ?? x,
     default: () => 0
+  }),
+
+  // Hybrid RAG Multi-Pass Synthesis fields
+  multiPassState: Annotation<{
+    currentPass: 1 | 2 | 3 | 4;
+    outline: OutlineStructure | null;
+    deepDiveFindings: SectionFindings[] | null;
+    validationReport: ValidationReport | null;
+    informationGaps: string[] | null;
+  } | null>({
+    reducer: (_, y) => y,
+    default: () => null
+  }),
+
+  citationMap: Annotation<Map<string, CitationUsage>>({
+    reducer: (_, y) => y ?? new Map(),
+    default: () => new Map()
+  }),
+
+  fullContentStore: Annotation<IContentStore>({
+    reducer: (_, y) => y,
+    default: () => new InMemoryContentStore()
   })
 });
 
@@ -412,7 +446,15 @@ export class LangGraphSearchEngine {
             content: r.markdown || r.content || '',
             quality: 0
           }));
-          
+
+          // Store full content in ContentStore BEFORE summarization (Hybrid RAG Pass 2)
+          const contentStore = state.fullContentStore;
+          newSources.forEach(source => {
+            if (source.content && source.content.length > SEARCH_CONFIG.MIN_CONTENT_LENGTH) {
+              contentStore.store(source.url, source.content);
+            }
+          });
+
           if (eventCallback) {
             eventCallback({
               type: 'found',
@@ -420,7 +462,7 @@ export class LangGraphSearchEngine {
               query: searchQuery
             });
           }
-          
+
           // Process sources in parallel for better performance
           if (SEARCH_CONFIG.PARALLEL_SUMMARY_GENERATION) {
             await Promise.all(newSources.map(async (source) => {
@@ -535,13 +577,17 @@ export class LangGraphSearchEngine {
           try {
             const scraped = await firecrawl.scrapeUrl(source.url, SEARCH_CONFIG.SCRAPE_TIMEOUT);
             if (scraped.success && scraped.markdown) {
+              // Store full content in ContentStore (Hybrid RAG Pass 2)
+              const contentStore = state.fullContentStore;
+              contentStore.store(source.url, scraped.markdown);
+
               const enrichedSource = {
                 ...source,
                 content: scraped.markdown,
                 quality: scoreContent(scraped.markdown, state.query)
               };
               newScrapedSources.push(enrichedSource);
-              
+
               // Show processing animation
               if (eventCallback) {
                 eventCallback({
@@ -551,9 +597,9 @@ export class LangGraphSearchEngine {
                   stage: 'browsing'
                 });
               }
-              
+
               await new Promise(resolve => setTimeout(resolve, 150));
-              
+
               const summary = await summarizeContent(scraped.markdown, state.query);
               if (summary) {
                 enrichedSource.summary = summary;
@@ -726,23 +772,138 @@ export class LangGraphSearchEngine {
         }
       })
       
-      // Synthesizing node with streaming
-      .addNode("synthesize", async (state: SearchState, config?: GraphConfig): Promise<Partial<SearchState>> => {
+      // Multi-Pass Synthesis node with streaming
+      .addNode("multiPassSynthesize", async (state: SearchState, config?: GraphConfig): Promise<Partial<SearchState>> => {
         const eventCallback = config?.configurable?.eventCallback;
-        
+        const contentStore = state.fullContentStore;
+        const sourcesToUse = state.processedSources || state.sources || [];
+
         if (eventCallback) {
           eventCallback({
             type: 'phase-update',
             phase: 'synthesizing',
-            message: 'Creating comprehensive answer...'
+            message: 'Multi-pass synthesis starting...'
           });
         }
-        
+
         try {
-          const sourcesToUse = state.processedSources || state.sources || [];
-          
-          const answer = await generateStreamingAnswer(
+          // Check if multi-pass synthesis is enabled
+          if (!SYNTHESIS_CONFIG.ENABLE_MULTI_PASS || sourcesToUse.length < 10) {
+            // Fall back to single-pass synthesis for small result sets
+            const answer = await generateStreamingAnswer(
+              state.query,
+              sourcesToUse,
+              (chunk) => {
+                if (eventCallback) {
+                  eventCallback({ type: 'content-chunk', chunk });
+                }
+              },
+              state.context
+            );
+
+            const followUpQuestions = await generateFollowUpQuestions(
+              state.query,
+              answer,
+              sourcesToUse,
+              state.context
+            );
+
+            return {
+              finalAnswer: answer,
+              followUpQuestions,
+              phase: 'complete' as SearchPhase
+            };
+          }
+
+          // PASS 1: Overview Generation
+          if (eventCallback) {
+            eventCallback({
+              type: 'multi-pass-phase',
+              pass: 1,
+              message: `Analyzing themes across ${sourcesToUse.length} sources...`
+            });
+          }
+
+          const outline = await generateOutline(
             state.query,
+            sourcesToUse,
+            state.context
+          );
+
+          if (eventCallback) {
+            eventCallback({
+              type: 'outline-generated',
+              outline
+            });
+          }
+
+          // PASS 2: Deep Dive
+          if (eventCallback) {
+            eventCallback({
+              type: 'multi-pass-phase',
+              pass: 2,
+              message: 'Deep diving into top sources per section...'
+            });
+          }
+
+          const deepDiveFindings: SectionFindings[] = [];
+          for (const section of outline.sections) {
+            if (eventCallback) {
+              eventCallback({
+                type: 'deep-dive-section',
+                sectionName: section.title,
+                sourcesUsed: section.relevantSources.length
+              });
+            }
+
+            const findings = await processSection(
+              section,
+              contentStore,
+              sourcesToUse,
+              state.query
+            );
+            deepDiveFindings.push(findings);
+          }
+
+          // PASS 3: Cross-Reference and Validation
+          if (eventCallback) {
+            eventCallback({
+              type: 'multi-pass-phase',
+              pass: 3,
+              message: 'Validating findings and checking for conflicts...'
+            });
+          }
+
+          const validationReport = await validateFindings(
+            deepDiveFindings,
+            contentStore,
+            sourcesToUse,
+            state.query
+          );
+
+          if (validationReport.conflicts && validationReport.conflicts.length > 0 && eventCallback) {
+            validationReport.conflicts.forEach(conflict => {
+              eventCallback({
+                type: 'conflict-detected',
+                claim: conflict.claim,
+                sources: [...conflict.viewpoint1.citations, ...conflict.viewpoint2.citations]
+              });
+            });
+          }
+
+          // PASS 4: Final Report Generation
+          if (eventCallback) {
+            eventCallback({
+              type: 'multi-pass-phase',
+              pass: 4,
+              message: 'Generating comprehensive report...'
+            });
+          }
+
+          const finalReport = await generateFinalReport(
+            state.query,
+            outline,
+            validationReport,
             sourcesToUse,
             (chunk) => {
               if (eventCallback) {
@@ -751,23 +912,50 @@ export class LangGraphSearchEngine {
             },
             state.context
           );
-          
+
+          // Validate citations
+          const citationValidator = new CitationValidator();
+          citationValidator.parseReportCitations(finalReport);
+          const citationStats = citationValidator.validate(sourcesToUse.length);
+
+          if (eventCallback) {
+            eventCallback({
+              type: 'citation-stats',
+              total: citationStats.totalUniqueCitations,
+              coverage: citationStats.citationCoverage
+            });
+          }
+
+          // Log citation statistics
+          console.log(`[Multi-Pass Synthesis] Citations: ${citationStats.totalUniqueCitations}/${sourcesToUse.length} (${(citationStats.citationCoverage * 100).toFixed(1)}%)`);
+
           // Generate follow-up questions
           const followUpQuestions = await generateFollowUpQuestions(
             state.query,
-            answer,
+            finalReport,
             sourcesToUse,
             state.context
           );
-          
+
           return {
-            finalAnswer: answer,
+            finalAnswer: finalReport,
             followUpQuestions,
+            multiPassState: {
+              currentPass: 4,
+              outline,
+              deepDiveFindings,
+              validationReport,
+              informationGaps: validationReport.informationGaps
+            },
+            citationMap: new Map(
+              Array.from(citationValidator['citationMap'].entries())
+            ),
             phase: 'complete' as SearchPhase
           };
         } catch (error) {
+          console.error('[Multi-Pass Synthesis] Error:', error);
           return {
-            error: error instanceof Error ? error.message : 'Failed to generate answer',
+            error: error instanceof Error ? error.message : 'Multi-pass synthesis failed',
             errorType: 'llm' as ErrorType,
             phase: 'error' as SearchPhase
           };
@@ -808,14 +996,14 @@ export class LangGraphSearchEngine {
       // Complete node
       .addNode("complete", async (state: SearchState, config?: GraphConfig): Promise<Partial<SearchState>> => {
         const eventCallback = config?.configurable?.eventCallback;
-        
+
         if (eventCallback) {
           eventCallback({
             type: 'phase-update',
             phase: 'complete',
             message: 'Search complete!'
           });
-          
+
           eventCallback({
             type: 'final-result',
             content: state.finalAnswer || '',
@@ -823,7 +1011,23 @@ export class LangGraphSearchEngine {
             followUpQuestions: state.followUpQuestions
           });
         }
-        
+
+        // Save search results to local file
+        try {
+          await saveSearchResults(
+            state.query,
+            state.finalAnswer || '',
+            state.sources || [],
+            state.citationMap || new Map(),
+            state.multiPassState?.outline,
+            state.multiPassState?.informationGaps || [],
+            state.followUpQuestions
+          );
+        } catch (error) {
+          console.error('[Complete Node] Failed to save search results:', error);
+          // Don't fail the search if saving fails
+        }
+
         return {
           phase: 'complete' as SearchPhase
         };
@@ -876,16 +1080,16 @@ export class LangGraphSearchEngine {
         (state: SearchState) => {
           if (state.phase === 'error') return "handleError";
           if (state.phase === 'planning') return "plan";  // Retry with new searches
-          return "synthesize";
+          return "multiPassSynthesize";
         },
         {
           handleError: "handleError",
           plan: "plan",
-          synthesize: "synthesize"
+          multiPassSynthesize: "multiPassSynthesize"
         }
       )
       .addConditionalEdges(
-        "synthesize",
+        "multiPassSynthesize",
         (state: SearchState) => state.phase === 'error' ? "handleError" : "complete",
         {
           handleError: "handleError",
@@ -930,7 +1134,11 @@ export class LangGraphSearchEngine {
         error: undefined,
         errorType: undefined,
         subQueries: undefined,
-        searchAttempt: 0
+        searchAttempt: 0,
+        // Hybrid RAG Multi-Pass Synthesis initialization
+        multiPassState: null,
+        citationMap: new Map(),
+        fullContentStore: new InMemoryContentStore()
       };
 
       // Configure with event callback

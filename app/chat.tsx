@@ -244,7 +244,7 @@ export function Chat() {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
-  }, [assessmentDisplay, finalReport]);
+  }, [assessmentDisplay]); // Removed finalReport to prevent infinite loop
 
   const saveApiKey = () => {
     if (firecrawlApiKey.trim()) {
@@ -275,20 +275,17 @@ export function Chat() {
       let finalSources: Source[] = [];
       let isRejected = false;
       let missingSources: string[] = [];
+      let assessmentId: string | undefined;
 
       // Read stream and update events
       for await (const event of readStreamableValue(stream)) {
         if (event) {
           events.push(event);
 
-          // Handle content streaming
+          // Handle content streaming - accumulate efficiently
           if (event.type === 'content-chunk') {
-            const content = events
-              .filter(e => e.type === 'content-chunk')
-              .map(e => e.type === 'content-chunk' ? e.chunk : '')
-              .join('');
-
-            setFinalReport({ content, sources: finalSources, rejected: isRejected, missingSources });
+            finalContent += event.chunk; // Accumulate chunks
+            setFinalReport({ content: finalContent, sources: finalSources, rejected: isRejected, missingSources, assessmentId });
           }
 
           // Capture final result
@@ -297,12 +294,13 @@ export function Chat() {
             finalSources = event.sources || [];
             isRejected = event.rejected || false;
             missingSources = event.missingSources || [];
+            assessmentId = event.assessmentId;
             setFinalReport({
               content: finalContent,
               sources: finalSources,
               rejected: isRejected,
               missingSources,
-              assessmentId: event.assessmentId
+              assessmentId
             });
           }
 
