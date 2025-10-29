@@ -1,10 +1,10 @@
 'use client';
 
-import { SearchEvent, SearchStep, SearchPhase } from '@/lib/langgraph-search-engine';
+import { SearchEvent, SearchStep, SearchPhase } from '@/lib/core/langgraph-search-engine';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { MarkdownRenderer } from './markdown-renderer';
-import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/favicon-utils';
+import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/utils/favicon-utils';
 
 // Component for animated thinking line that cycles through messages
 function AnimatedThinkingLine({ messages }: { messages: string[] }) {

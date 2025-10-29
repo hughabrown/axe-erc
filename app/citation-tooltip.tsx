@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Source } from '@/lib/langgraph-search-engine';
-import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/favicon-utils';
+import { Source } from '@/lib/core/langgraph-search-engine';
+import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/utils/favicon-utils';
 
 interface CitationTooltipProps {
   sources: Source[];

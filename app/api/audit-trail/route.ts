@@ -7,7 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuditTrail, listAuditTrails } from '@/lib/audit-trail-export';
+import { getAuditTrail, listAuditTrails } from '@/lib/export/audit-trail-export';
 import { readFile, readdir } from 'fs/promises';
 import { join } from 'path';
 

@@ -40,5 +40,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# backup files
+*.bak
+*.backup
+
+# OS metadata
+*.Zone.Identifier
+
 # Search results (optional - uncomment to exclude from git)
 # search-results/

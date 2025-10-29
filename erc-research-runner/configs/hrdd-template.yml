@@ -1,0 +1,263 @@
+# =============================================================================
+# HRDD RESEARCH CONFIGURATION TEMPLATE
+# =============================================================================
+# This is a template for creating HRDD (Human Rights Due Diligence) research
+# configurations for new business opportunities.
+#
+# INSTRUCTIONS:
+# 1. Copy this file to a new name (e.g., "company-name-project-hrdd.yml")
+# 2. Fill in all variables in the VARIABLES section below
+# 3. The queries will automatically use these variables where {{VARIABLE_NAME}} appears
+# 4. Customize queries as needed for the specific opportunity
+# =============================================================================
+
+# =============================================================================
+# VARIABLES - Fill these out for each new opportunity
+# =============================================================================
+variables:
+  # Company Information
+  COMPANY_NAME: "[e.g., SAAB AB]"
+  COUNTRY: "[e.g., Sweden]"
+  INDUSTRY_SECTOR: "[e.g., defense, automotive, semiconductor, etc.]"
+
+  # Project Details
+  PROJECT_NAME: "[e.g., AI-Powered Reconnaissance Drones]"
+  APPLICATION_TYPE: "[e.g., reconnaissance drones, autonomous vehicles, etc.]"
+  TECHNOLOGY: "[e.g., Metis Chip Down Design]"
+
+  # Partners & Customers
+  DESIGN_PARTNER: "[e.g., Sigma Connectivity]"
+  END_CUSTOMER: "[e.g., Ministry of Defense of European Nations]"
+
+  # Business Details
+  DATE: "[YYYY-MM-DD]"
+  OPPORTUNITY_SIZE: "[e.g., Up to 10,000 units in 2026]"
+
+  # Additional Context (optional, for query customization)
+  SPECIFIC_CONCERNS: "[e.g., autonomous weapons, surveillance, dual-use, etc.]"
+  REGULATORY_FRAMEWORK: "[e.g., European AI Act, ITAR, Wassenaar, etc.]"
+
+# =============================================================================
+# REPORT METADATA
+# =============================================================================
+report:
+  title: "HRDD Assessment: {{COMPANY_NAME}} - {{PROJECT_NAME}}"
+  customer: "{{COMPANY_NAME}}"
+  project: "{{PROJECT_NAME}}"
+  design_partner: "{{DESIGN_PARTNER}}"
+  chip_solution: "{{TECHNOLOGY}}"
+  date: "{{DATE}}"
+  opportunity_size: "{{OPPORTUNITY_SIZE}}"
+  end_customer: "{{END_CUSTOMER}}"
+
+# =============================================================================
+# RESEARCH SECTIONS
+# =============================================================================
+# These sections follow a standard HRDD framework but can be customized
+# per opportunity. Variables are automatically substituted in queries.
+
+sections:
+  # ---------------------------------------------------------------------------
+  # Stage 1: Preliminary Screening
+  # Purpose: Quick go/no-go assessment
+  # ---------------------------------------------------------------------------
+  - name: "preliminary_screening"
+    title: "Stage 1: Preliminary Screening"
+    queries:
+      - id: "company_sanctions"
+        query: "{{COMPANY_NAME}} {{COUNTRY}} OFAC EU sanctions list {{INDUSTRY_SECTOR}}"
+        limit: 10
+        purpose: "Verify {{COMPANY_NAME}} is not on any sanctions lists"
+
+      - id: "country_export_controls"
+        query: "{{COUNTRY}} {{INDUSTRY_SECTOR}} export regulations {{COMPANY_NAME}} compliance"
+        limit: 8
+        purpose: "Check {{COUNTRY}} export control framework"
+
+      - id: "company_controversies"
+        query: "{{COMPANY_NAME}} controversial {{APPLICATION_TYPE}} violations human rights"
+        limit: 10
+        purpose: "Check for prohibited activities or weapons involvement"
+
+      - id: "partner_verification"
+        query: "{{DESIGN_PARTNER}} {{COUNTRY}} {{INDUSTRY_SECTOR}} partner reputation"
+        limit: 5
+        purpose: "Verify design partner background and reputation"
+
+  # ---------------------------------------------------------------------------
+  # Risk Factor 1: Geographic & Regulatory Context
+  # Purpose: Understand the regulatory and geopolitical landscape
+  # ---------------------------------------------------------------------------
+  - name: "geographic_context"
+    title: "Risk Factor 1: Geographic & Regulatory Context"
+    queries:
+      - id: "country_ethics_framework"
+        query: "{{COUNTRY}} {{INDUSTRY_SECTOR}} exports ethical guidelines human rights"
+        limit: 8
+        purpose: "{{COUNTRY}} export ethics and human rights framework"
+
+      - id: "regional_cooperation"
+        query: "{{COUNTRY}} {{INDUSTRY_SECTOR}} cooperation framework technology sovereignty"
+        limit: 10
+        purpose: "Regional cooperation and technology transfer context"
+
+      - id: "regulatory_compliance"
+        query: "{{REGULATORY_FRAMEWORK}} {{APPLICATION_TYPE}} compliance requirements"
+        limit: 10
+        purpose: "Applicable regulatory frameworks and compliance requirements"
+
+      - id: "dual_use_controls"
+        query: "{{COUNTRY}} dual-use technology export controls {{INDUSTRY_SECTOR}}"
+        limit: 8
+        purpose: "Dual-use export control regulations"
+
+  # ---------------------------------------------------------------------------
+  # Risk Factor 2: Customer Corporate Profile
+  # Purpose: Assess customer's track record and governance
+  # ---------------------------------------------------------------------------
+  - name: "customer_profile"
+    title: "Risk Factor 2: {{COMPANY_NAME}} Corporate Profile"
+    queries:
+      - id: "company_profile"
+        query: "{{COMPANY_NAME}} public company stock exchange governance structure"
+        limit: 5
+        purpose: "Basic {{COMPANY_NAME}} corporate information and structure"
+
+      - id: "company_esg"
+        query: "{{COMPANY_NAME}} ESG sustainability report corporate responsibility"
+        limit: 10
+        purpose: "{{COMPANY_NAME}} ESG and sustainability practices"
+
+      - id: "company_ethics"
+        query: "{{COMPANY_NAME}} {{INDUSTRY_SECTOR}} ethics policy international humanitarian law"
+        limit: 8
+        purpose: "{{COMPANY_NAME}}'s ethical framework for {{INDUSTRY_SECTOR}} products"
+
+      - id: "company_track_record"
+        query: "{{COMPANY_NAME}} {{INDUSTRY_SECTOR}} projects controversies investigations"
+        limit: 12
+        purpose: "{{COMPANY_NAME}} historical track record and issues"
+
+      - id: "company_transparency"
+        query: "{{COMPANY_NAME}} transparency reporting disclosure {{INDUSTRY_SECTOR}}"
+        limit: 8
+        purpose: "Corporate transparency and public disclosure practices"
+
+  # ---------------------------------------------------------------------------
+  # Risk Factor 3: End-Use Application
+  # Purpose: Assess risks specific to the application/technology
+  # ---------------------------------------------------------------------------
+  - name: "end_use_application"
+    title: "Risk Factor 3: End-Use Application - {{APPLICATION_TYPE}}"
+    queries:
+      - id: "application_classification"
+        query: "{{APPLICATION_TYPE}} {{SPECIFIC_CONCERNS}} classification international law"
+        limit: 10
+        purpose: "Classify application type and associated concerns"
+
+      - id: "technology_ethics"
+        query: "{{APPLICATION_TYPE}} ethical concerns human rights international humanitarian law"
+        limit: 10
+        purpose: "Ethical considerations for {{APPLICATION_TYPE}}"
+
+      - id: "human_control_requirements"
+        query: "{{APPLICATION_TYPE}} meaningful human control ICRC guidelines"
+        limit: 8
+        purpose: "Human-in-the-loop and control requirements"
+
+      - id: "technology_safeguards"
+        query: "{{APPLICATION_TYPE}} safeguards risk mitigation {{TECHNOLOGY}}"
+        limit: 8
+        purpose: "Technical safeguards and risk mitigation measures"
+
+  # ---------------------------------------------------------------------------
+  # Risk Factor 4: End Customer Profile
+  # Purpose: Assess the actual end users and their track record
+  # ---------------------------------------------------------------------------
+  - name: "end_customer_assessment"
+    title: "Risk Factor 4: End Customer Assessment"
+    queries:
+      - id: "end_customer_profile"
+        query: "{{END_CUSTOMER}} human rights record international law compliance"
+        limit: 10
+        purpose: "End customer human rights track record"
+
+      - id: "end_customer_conflicts"
+        query: "{{END_CUSTOMER}} armed conflicts international humanitarian law violations"
+        limit: 10
+        purpose: "Current conflicts and IHL compliance"
+
+      - id: "end_customer_technology_use"
+        query: "{{END_CUSTOMER}} {{APPLICATION_TYPE}} deployment ethical concerns"
+        limit: 8
+        purpose: "How end customer uses similar technologies"
+
+      - id: "end_customer_oversight"
+        query: "{{END_CUSTOMER}} civilian oversight accountability mechanisms {{INDUSTRY_SECTOR}}"
+        limit: 8
+        purpose: "Oversight and accountability mechanisms"
+
+  # ---------------------------------------------------------------------------
+  # Risk Factor 5: Supply Chain & Partners
+  # Purpose: Assess risks in the supply chain and partnership network
+  # ---------------------------------------------------------------------------
+  - name: "supply_chain_partners"
+    title: "Risk Factor 5: Supply Chain & Partner Assessment"
+    queries:
+      - id: "design_partner_profile"
+        query: "{{DESIGN_PARTNER}} company profile {{INDUSTRY_SECTOR}} partnerships"
+        limit: 8
+        purpose: "Design partner corporate profile and experience"
+
+      - id: "design_partner_ethics"
+        query: "{{DESIGN_PARTNER}} ethical standards human rights {{INDUSTRY_SECTOR}}"
+        limit: 8
+        purpose: "Design partner ethical standards and track record"
+
+      - id: "technology_provider"
+        query: "{{TECHNOLOGY}} provider manufacturer ethical sourcing"
+        limit: 6
+        purpose: "Technology/component provider assessment"
+
+      - id: "supply_chain_transparency"
+        query: "{{COMPANY_NAME}} supply chain transparency conflict minerals"
+        limit: 8
+        purpose: "Supply chain transparency and responsible sourcing"
+
+# =============================================================================
+# TEMPLATE PLACEHOLDERS
+# =============================================================================
+# This section is used by the HRDD processing engine to substitute values
+placeholders:
+  CUSTOMER_NAME: "{{COMPANY_NAME}}"
+  COUNTRY: "{{COUNTRY}}"
+  APPLICATION_TYPE: "{{APPLICATION_TYPE}}"
+  TECHNOLOGY: "{{TECHNOLOGY}}"
+  DESIGN_PARTNER: "{{DESIGN_PARTNER}}"
+  END_USERS: "{{END_CUSTOMER}}"
+  INDUSTRY_SECTOR: "{{INDUSTRY_SECTOR}}"
+
+# =============================================================================
+# CUSTOMIZATION GUIDELINES
+# =============================================================================
+# When creating a new config from this template:
+#
+# 1. REQUIRED: Fill out all variables in the "variables" section
+#
+# 2. REVIEW QUERIES: Check that queries make sense for your specific case
+#    - Some queries may need additional context
+#    - You may need to add industry-specific queries
+#    - Adjust search limits based on expected result volume
+#
+# 3. ADD SECTIONS: Consider if additional sections are needed:
+#    - Specific regulatory frameworks (e.g., ITAR, EAR)
+#    - Industry-specific risks (e.g., environmental for mining)
+#    - Regional considerations (e.g., GDPR for EU)
+#
+# 4. CUSTOMIZE PURPOSES: Update the "purpose" fields to be specific
+#
+# 5. SAVE WITH DESCRIPTIVE NAME: Use format:
+#    "[company-slug]-[project-slug]-hrdd.yml"
+#    Example: "saab-reconnaissance-drones-hrdd.yml"
+#
+# =============================================================================

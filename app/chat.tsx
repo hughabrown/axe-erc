@@ -10,7 +10,7 @@ import { RejectedBanner } from './components/rejected-banner';
 import { SourceWarningBanner } from './components/source-warning-banner';
 import { AuditTrailDownload } from './components/audit-trail-download';
 import Image from 'next/image';
-import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/favicon-utils';
+import { getFaviconUrl, getDefaultFavicon, markFaviconFailed } from '@/lib/utils/favicon-utils';
 import {
   Dialog,
   DialogContent,

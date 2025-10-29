@@ -8,7 +8,7 @@
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 import { SearchDisplay } from '../search-display';
-import type { SearchEvent, OutlineStructure } from '@/lib/langgraph-search-engine';
+import type { SearchEvent, OutlineStructure } from '@/lib/core/langgraph-search-engine';
 
 describe('Multi-Pass Synthesis Display', () => {
   it('should display multi-pass phase indicators (Pass 1-4)', () => {

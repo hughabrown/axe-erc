@@ -1,0 +1,114 @@
+# HRDD Research Configuration
+# SAAB Reconnaissance Drones with AI - Due Diligence Assessment
+
+report:
+  title: "HRDD Assessment: SAAB AI-Powered Reconnaissance Drones"
+  customer: "SAAB AB"
+  project: "Reconnaissance Drones with AI Capabilities"
+  design_partner: "Sigma Connectivity"
+  chip_solution: "Metis Chip Down Design"
+  date: "2025-10-27"
+  opportunity_size: "Up to 10,000 units in 2026"
+  end_customer: "Ministry of Defense of European Nations"
+
+sections:
+  - name: "preliminary_screening"
+    title: "Stage 1: Preliminary Screening"
+    queries:
+      - id: "saab_sanctions"
+        query: "SAAB AB Sweden OFAC EU sanctions list defense"
+        limit: 10
+        purpose: "Verify SAAB is not on any sanctions lists"
+
+      - id: "sweden_export_controls"
+        query: "Sweden defense export regulations SAAB compliance"
+        limit: 8
+        purpose: "Check Swedish export control framework"
+
+      - id: "saab_controversies"
+        query: "SAAB AB controversial weapons cluster munitions violations"
+        limit: 10
+        purpose: "Check for prohibited weapons involvement"
+
+      - id: "sigma_connectivity"
+        query: "Sigma Connectivity Sweden defense partner reputation"
+        limit: 5
+        purpose: "Verify design partner background"
+
+  - name: "geographic_context"
+    title: "Risk Factor 1: Geographic & Regulatory Context"
+    queries:
+      - id: "sweden_defense_ethics"
+        query: "Sweden defense exports ethical guidelines human rights"
+        limit: 8
+        purpose: "Swedish defense export ethics"
+
+      - id: "eu_defense_cooperation"
+        query: "European defense cooperation framework technology sovereignty"
+        limit: 10
+        purpose: "EU defense collaboration context"
+
+      - id: "nato_tech_sharing"
+        query: "NATO technology sharing agreements European partners non-US"
+        limit: 8
+        purpose: "NATO tech transfer rules (excluding US)"
+
+      - id: "european_ai_act"
+        query: "European AI Act military applications high-risk systems"
+        limit: 10
+        purpose: "EU AI regulation for defense systems"
+
+  - name: "customer_profile"
+    title: "Risk Factor 2: SAAB Corporate Profile"
+    queries:
+      - id: "saab_company_profile"
+        query: "SAAB AB public company stock exchange governance structure"
+        limit: 5
+        purpose: "Basic SAAB corporate information"
+
+      - id: "saab_esg"
+        query: "SAAB AB ESG sustainability report corporate responsibility"
+        limit: 10
+        purpose: "SAAB ESG and sustainability practices"
+
+      - id: "saab_defense_ethics"
+        query: "SAAB AB defense ethics policy international humanitarian law"
+        limit: 8
+        purpose: "SAAB's ethical framework for defense products"
+
+      - id: "saab_track_record"
+        query: "SAAB AB defense projects controversies investigations"
+        limit: 12
+        purpose: "SAAB historical track record and issues"
+
+  - name: "end_use_application"
+    title: "Risk Factor 3: End-Use Application - AI Reconnaissance Drones"
+    queries:
+      - id: "reconnaissance_vs_autonomous"
+        query: "reconnaissance drones AI target finding vs autonomous weapons systems"
+        limit: 10
+        purpose: "Distinguish surveillance from autonomous weapons"
+
+      - id: "ai_situational_awareness"
+        query: "AI situational awareness military applications human control IHL"
+        limit: 8
+        purpose: "AI for situational awareness compliance"
+
+      - id: "drone_surveillance_ethics"
+        query: "drone surveillance systems international humanitarian law proportionality"
+        limit: 10
+        purpose: "IHL compliance for reconnaissance drones"
+
+      - id: "meaningful_human_control"
+        query: "meaningful human control AI target identification ICRC guidelines"
+        limit: 8
+        purpose: "Human-in-the-loop requirements"
+
+# Template placeholders
+placeholders:
+  CUSTOMER_NAME: "SAAB AB"
+  COUNTRY: "Sweden"
+  APPLICATION_TYPE: "AI-powered reconnaissance drones"
+  TECHNOLOGY: "Metis Chip Down Design"
+  DESIGN_PARTNER: "Sigma Connectivity"
+  END_USERS: "European Ministries of Defense"

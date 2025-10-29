@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-10-24T12:45:02.947Z",
+  "query": "What are the key features of Next.js 15?",
+  "searchId": "2025-10-24-14-45-02-what-are-the-key-features-of-nextjs-15",
+  "finalReport": "Next.js 15 introduces a range of features and improvements aimed at enhancing performance, developer experience, and compatibility with the latest technologies. Here are the key features:\n\n1. **@next/codemod CLI**: A new command-line tool that automates the upgrade process to the latest Next.js and React versions, simplifying code transformations and dependency updates [1], [6].\n\n2. **Async Request APIs**: Request-specific APIs like `headers`, `cookies`, `params`, and `searchParams` are now asynchronous, improving performance by allowing components to be pre-rendered without waiting for request-specific data [1], [2], [6].\n\n3. **Caching Semantics**: The default behavior for caching has changed. Fetch requests, GET Route Handlers, and client navigations are no longer cached by default, allowing developers to opt into caching as needed [1], [2], [6].\n\n4. **React 19 Support**: Full support for React 19, including new hooks like `useActionState`, `useFormStatus`, and `useOptimistic`, as well as improvements in hydration error handling [1], [2], [9].\n\n5. **Turbopack**: Now stable, Turbopack offers significant performance improvements in local server startup and code updates, making it faster than Webpack in most scenarios [1], [2], [7].\n\n6. **Static Indicator**: A new visual indicator shows static routes during development, enhancing the developer experience [1], [2].\n\n7. **`unstable_after` API**: This experimental API allows developers to execute code after a response finishes streaming, providing more control over server-side logic [1], [6].\n\n8. **Enhanced Forms (`next/form`)**: Enhances HTML forms with client-side navigation capabilities, prefetching, and progressive enhancement [1], [2].\n\n9. **TypeScript Support for `next.config.ts`**: Developers can now use TypeScript for their Next.js configuration files, improving type safety and developer experience [1], [2].\n\n10. **Server Actions Security**: Improvements have been made to enhance the security of server actions, including unguessable endpoints and the removal of unused actions [1], [4].\n\n11. **Bundling External Packages**: New configuration options for optimizing the bundling of external packages in both App and Pages Router [1], [6].\n\n12. **ESLint 9 Support**: Next.js 15 adds support for ESLint 9, improving code quality checks [1], [2].\n\n13. **Partial Prerendering**: Allows Next.js to prerender the static shell of a page while streaming dynamic content separately, improving loading times and user experience [3], [9].\n\n14. **Improved Error Messages**: Enhancements to error messaging make it easier for developers to debug issues [4], [7].\n\n15. **Performance Improvements**: Various optimizations in build times, Fast Refresh capabilities, and data fetching processes enhance overall development efficiency [1], [8].\n\nThese features collectively aim to improve the stability, performance, and developer experience of Next.js applications, making Next.js 15 a significant update for developers [1], [2], [6].",
+  "sources": [
+    {
+      "url": "https://nextjs.org/blog/next-15",
+      "title": "Next.js 15",
+      "cited": false
+    },
+    {
+      "url": "https://dev.to/dimeloper/whats-new-in-nextjs-15-new-hooks-turbopack-and-more-2lo8",
+      "title": "What's New in Next.js 15: New Hooks, Turbopack and more",
+      "cited": false
+    },
+    {
+      "url": "https://javascript.plainenglish.io/nextjs-15-features-b30d575f8dd7",
+      "title": "Next.js 15 Features: A Walkthrough - JavaScript in Plain English",
+      "cited": false
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=fqabW3WRUbw",
+      "title": "Next.js 15 Breakdown (Everything You Need To Know) - YouTube",
+      "cited": false
+    },
+    {
+      "url": "https://nextjs.org/blog/next-15-1",
+      "title": "Next.js 15.1",
+      "cited": false
+    },
+    {
+      "url": "https://medium.com/@dmostoller/next-js-15-new-features-breaking-changes-and-improvements-you-need-to-know-ac98fa6f0c2d",
+      "title": "Next.js 15: New Features, Breaking Changes, and Improvements ...",
+      "cited": false
+    },
+    {
+      "url": "https://nextjs.org/blog/next-15-2",
+      "title": "Next.js 15.2",
+      "cited": false
+    },
+    {
+      "url": "https://dev.to/mohith/introduction-to-nextjs-15-whats-new-and-improved-12gl",
+      "title": "Introduction to Next.js 15: What's New and Improved - DEV Community",
+      "cited": false
+    },
+    {
+      "url": "https://www.linkedin.com/pulse/top-7-features-nextjs-15-supercharge-your-web-apps-joodi--ro5lf",
+      "title": "Top 7 Features in Next.js 15 That Will Supercharge Your Web Apps",
+      "cited": false
+    }
+  ],
+  "stats": {
+    "totalSources": 9,
+    "citedSources": 0,
+    "citationCoverage": 0,
+    "uniqueCitations": 0,
+    "reportLength": 412,
+    "passes": {
+      "pass1Complete": false,
+      "pass2Complete": false,
+      "pass3Complete": true,
+      "pass4Complete": true
+    }
+  },
+  "followUpQuestions": [
+    "What are the benefits of using the @next/codemod CLI for upgrades?",
+    "How do the new Async Request APIs improve performance in Next.js 15?"
+  ],
+  "informationGaps": []
+}

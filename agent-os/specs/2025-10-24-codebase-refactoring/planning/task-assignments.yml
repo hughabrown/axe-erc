@@ -1,0 +1,36 @@
+task_assignments:
+  - task_group: "Task Group 1: Backup and Preparation"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 2: Baseline Test Execution"
+    assigned_subagent: "testing-engineer"
+
+  - task_group: "Task Group 3: Delete Obsolete Files"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 4: Create Directory Structure"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 5: Move Core Library Files"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 6: Move Test Files"
+    assigned_subagent: "testing-engineer"
+
+  - task_group: "Task Group 7: Move Documentation Files"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 8: Archive Completed Specs"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 9: Update Import Statements - Core and Synthesis"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 10: Update Import Statements - HRDD and Export"
+    assigned_subagent: "api-engineer"
+
+  - task_group: "Task Group 11: Update Test File Imports"
+    assigned_subagent: "testing-engineer"
+
+  - task_group: "Task Group 12: Comprehensive Validation and Testing"
+    assigned_subagent: "testing-engineer"

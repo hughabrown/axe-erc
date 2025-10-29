@@ -1,10 +1,10 @@
 'use server';
 
 import { createStreamableValue } from 'ai/rsc';
-import { FirecrawlClient } from '@/lib/firecrawl';
-import { LangGraphSearchEngine as SearchEngine, SearchEvent } from '@/lib/langgraph-search-engine';
-import { HRDDWorkflowEngine, HRDDEvent } from '@/lib/hrdd-workflow-engine';
-import { Dossier } from '@/lib/hrdd-state';
+import { FirecrawlClient } from '@/lib/core/firecrawl';
+import { LangGraphSearchEngine as SearchEngine, SearchEvent } from '@/lib/core/langgraph-search-engine';
+import { HRDDWorkflowEngine, HRDDEvent } from '@/lib/hrdd/hrdd-workflow-engine';
+import { Dossier } from '@/lib/hrdd/hrdd-state';
 
 // Original search function (for backward compatibility if needed)
 export async function search(query: string, context?: { query: string; response: string }[], apiKey?: string) {
@@ -43,7 +43,7 @@ export async function hrddAssessment(dossier: Dossier, apiKey?: string) {
     try {
       if (testMode) {
         // Use mock assessment in test mode (no API calls)
-        const { runMockAssessment } = await import('@/lib/hrdd-test-mode');
+        const { runMockAssessment } = await import('@/lib/hrdd/hrdd-test-mode');
         await runMockAssessment(dossier, (event) => {
           stream.update(event);
         });

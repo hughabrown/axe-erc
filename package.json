@@ -11,7 +11,9 @@
     "test:watch": "jest --watch",
     "benchmark": "tsx eval/benchmark-runner.ts",
     "benchmark:quick": "tsx eval/benchmark-runner.ts factual_queries",
-    "test:firecrawl": "tsx eval/test-firecrawl-simple.ts"
+    "test:firecrawl": "tsx eval/test-firecrawl-simple.ts",
+    "research": "tsx erc-research-runner/scripts/simple-research-runner.ts",
+    "generate-report": "tsx erc-research-runner/scripts/template-report-generator.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.18",
@@ -21,6 +23,7 @@
     "@langchain/langgraph": "^0.2.74",
     "@langchain/openai": "^0.5.11",
     "@mendable/firecrawl-js": "^1.25.1",
+    "dotenv": "^16.4.5",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-label": "^2.1.6",
     "@radix-ui/react-popover": "^1.1.13",
@@ -37,6 +40,7 @@
     "ai": "^4.3.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "js-yaml": "^4.1.0",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
     "next-themes": "^0.4.6",
@@ -53,6 +57,7 @@
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -61,6 +66,7 @@
     "jest": "^30.2.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.5",
+    "tsx": "^4.19.2",
     "tw-animate-css": "^1.3.0",
     "typescript": "^5"
   }

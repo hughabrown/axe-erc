@@ -1,0 +1,21 @@
+{
+  "name": "erc-research-runner",
+  "version": "1.0.0",
+  "description": "Simple research system for running manual research queries and generating templated reports",
+  "private": true,
+  "scripts": {
+    "research": "tsx scripts/simple-research-runner.ts",
+    "generate-report": "tsx scripts/template-report-generator.ts"
+  },
+  "dependencies": {
+    "@mendable/firecrawl-js": "^1.25.1",
+    "dotenv": "^16.4.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}
